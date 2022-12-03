@@ -1,0 +1,18 @@
+session_name: tokenizers
+start_directory: ~/code/tokenizers
+windows:
+  - window_name: helm
+    focus: True
+    layout: main-vertical
+    panes:
+      - shell_command:
+          - vim
+        focus: true
+      - shell_command:
+          - iex -S mix
+      - shell_command:
+          - mix test
+        sleep_before: 5
+  - window_name: lazygit
+    panes:
+      - lazygit

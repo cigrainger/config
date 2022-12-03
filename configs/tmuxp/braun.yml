@@ -1,0 +1,24 @@
+session_name: braun
+start_directory: ~/code/parasol
+windows:
+  - window_name: helm
+    focus: True
+    layout: main-vertical
+    panes:
+      - shell_command:
+          - vim
+        focus: true
+      - shell_command:
+          - ave super -- elixir --sname braun --cookie mycookie -S mix phx.server
+      - shell_command:
+          - iex --sname iex --cookie mycookie --remsh braun
+        sleep_before: 5
+      - shell_command:
+          - mix test.watch
+        sleep_before: 5
+  - window_name: lazygit
+    panes:
+      - lazygit
+  - window_name: postgres
+    panes:
+      - postgres

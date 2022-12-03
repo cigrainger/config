@@ -1,0 +1,15 @@
+session_name: blog
+start_directory: ~/code/blog
+windows:
+  - window_name: helm
+    focus: True
+    layout: main-vertical
+    panes:
+      - shell_command:
+          - vim
+        focus: true
+      - shell_command:
+          - hugo serve
+  - window_name: lazygit
+    panes:
+      - lazygit
