@@ -4,7 +4,7 @@
   inputs = {
     # Package sets
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-22.05-darwin";
-    nixpkgs-unstable.url = github:NixOS/nixpkgs/nixpkgs-unstable;
+    nixpkgs-unstable.url = github:NixOS/nixpkgs/nixos-unstable;
 
     # Environment/system management
     darwin = {
@@ -30,12 +30,41 @@
       };
     in
     {
+      nixosConfigurations.athos = inputs.nixpkgs-unstable.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          { nixpkgs = nixpkgsConfig; }
+          ./hosts/athos/configuration.nix
+          home-manager.nixosModules.home-manager
+          {
+            nixpkgs = nixpkgsConfig;
+            # `home-manager` config
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.chris = { pkgs, ... }: {
+              imports = [
+                ./home.nix
+                ./home/fish.nix
+                ./home/direnv.nix
+                ./home/neovim.nix
+              ];
+
+              home = {
+                stateVersion = "21.05";
+                username = "chris";
+                homeDirectory = "/home/chris";
+              };
+            };
+          }
+        ];
+      };
+
       darwinConfigurations = rec {
         cds = darwinSystem {
           system = "aarch64-darwin";
           modules = [
             # Main `nix-darwin` config
-            ./configuration.nix
+            ./hosts/cds/configuration.nix
             # `home-manager` module
             home-manager.darwinModules.home-manager
             {

@@ -1,10 +1,10 @@
 { pkgs, lib, ... }:
-{
-  nixpkgs.config.allowBroken = true;
-  nix = {
-    package = pkgs.nixUnstable;
-    configureBuildUsers = true;
 
+{
+  imports = [ ../common/configuration.nix ];
+
+  nix = {
+    configureBuildUsers = true;
     settings = {
       substituters = [
         "https://cache.nixos.org/"
@@ -18,24 +18,13 @@
         "@admin"
       ];
     };
-
-    extraOptions = ''
-      auto-optimise-store = true
-      experimental-features = nix-command flakes
-    '' + lib.optionalString (pkgs.system == "aarch64-darwin") ''
-      extra-platforms = x86_64-darwin aarch64-darwin
-    '';
-
   };
 
-  users.users."chris".home = "/Users/chris";
-
-  programs = {
-    fish.enable = true;
-  };
 
   # Auto upgrade nix package and the daemon service.
   services.nix-daemon.enable = true;
+
+  users.users."chris".home = "/Users/chris";
 
   homebrew = {
     enable = true;
@@ -96,24 +85,4 @@
       "zotero"
     ];
   };
-
-  environment = {
-    etc."elixir-ls/language_server.sh".source =
-      "${pkgs.elixir_ls}/lib/language_server.sh";
-
-    pathsToLink = [ "/share/fish" ];
-    shells = with pkgs; [ fish ];
-variables = {
-EDITOR = "nvim";
-};
-  };
-
-  fonts = {
-    fontDir.enable = true;
-    fonts = with pkgs; [
-      recursive
-      (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
-    ];
-  };
-
 }

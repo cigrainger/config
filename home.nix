@@ -22,8 +22,6 @@
     jq
     lazydocker
     lua
-    mas
-    m-cli
     mosh
     ncdu
     nixfmt
