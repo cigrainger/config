@@ -42,9 +42,12 @@
     interfaces.wlp58s0.useDHCP = true;
     nameservers = [ "1.1.1.1" "1.0.0.1" ];
     networkmanager.enable = true;
-    firewall.extraCommands = ''
-      ip46tables -I INPUT 1 -i vboxnet+ -p tcp -m tcp --dport 2049 -j ACCEPT
-    '';
+    firewall = {
+      allowedUDPPorts = [ ${services.tailscale.port} ];
+      extraCommands = ''
+        ip46tables -I INPUT 1 -i vboxnet+ -p tcp -m tcp --dport 2049 -j ACCEPT
+      '';
+    };
   };
 
   security.rtkit.enable = true;
@@ -98,6 +101,8 @@
       enableSSHSupport = true;
     };
   };
+
+  tailscale.enable = true;
 
   virtualisation = {
     virtualbox.host.enable = true;
