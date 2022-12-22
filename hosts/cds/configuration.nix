@@ -39,6 +39,7 @@
     '';
     brews = [
       "act"
+      "asdf"
       "awscli"
       "flyctl"
       "gcc"
