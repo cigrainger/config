@@ -59,7 +59,6 @@
       home = "/home/chris";
       description = "Christopher Grainger";
       extraGroups = [ "wheel" "networkmanager" "docker" ];
-      shell = pkgs.fish;
       hashedPassword =
         "$6$RkxvMra2G8J0$RDJzuC2A9gd3xybyVIqPf2WAgY.ptEmXggKd5HSC7YfXuOb84yfdlIkDKTdEgCod1.zhXFUqwitisr8./v9ZI.";
       openssh.authorizedKeys.keys = [
