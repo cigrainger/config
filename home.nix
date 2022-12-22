@@ -6,6 +6,7 @@
     awscli2
     bottom
     btop
+    cachix
     cargo
     coreutils
     curl
@@ -23,12 +24,12 @@
     lazydocker
     lua
     mosh
-    ncdu
     nixfmt
     nixpkgs-fmt
     onefetch
     ripgrep
     rnix-lsp
+    rustc
     sd
     shfmt
     signal-cli
