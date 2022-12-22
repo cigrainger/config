@@ -1,8 +1,11 @@
 -- Locals
 local catppuccin = require("catppuccin")
 local cmp = require("cmp")
+local cmp_git = require("cmp_git")
 local cmp_nvim_lsp = require("cmp_nvim_lsp")
 local comment = require("Comment")
+local copilot = require("copilot")
+local copilot_cmp = require("copilot_cmp")
 local crates = require("crates")
 local gitsigns = require("gitsigns")
 local gs = package.loaded.gitsigns
@@ -51,11 +54,6 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
--- Treesitter folding
-vim.opt.foldmethod = "expr"
-vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-vim.opt.foldenable = false;
-
 -- Setup
 catppuccin.setup {
 	styles = {
@@ -101,10 +99,13 @@ cmp.setup {
 		end, { 'i', 's' }),
 	}),
 	sources = {
+		{ name = "copilot" },
 		{ name = 'nvim_lsp' },
+		{ name = "git" },
 		{ name = 'luasnip' },
 		{ name = 'path' },
 		{ name = 'rg' },
+		{ name = 'nvim_lsp_signature_help' }
 	},
 	window = {
 		documentation = {
@@ -115,6 +116,16 @@ cmp.setup {
 		},
 	},
 }
+
+vim.defer_fn(function()
+	copilot.setup()
+end, 100)
+
+vim.defer_fn(function()
+	copilot_cmp.setup()
+end, 200)
+
+cmp_git.setup()
 
 comment.setup {}
 
@@ -131,7 +142,7 @@ leap.add_default_mappings()
 
 lualine.setup {
 	options = {
-		theme = 'catpuccin',
+		theme = 'catppuccin',
 	}
 }
 
@@ -212,56 +223,6 @@ require('nvim-treesitter.configs').setup {
 		max_file_lines = nil,
 	},
 	indent = { enable = true },
-	textobjects = {
-		swap = {
-			enable = true,
-			swap_next = {
-				["<leader>a"] = "@parameter.inner",
-			},
-			swap_previous = {
-				["<leader>A"] = "@parameter.inner",
-			},
-		},
-		lsp_interop = {
-			enable = true,
-			border = 'none',
-			peek_definition_code = {
-				["<leader>cp"] = "@function.outer",
-				["<leader>cP"] = "@class.outer",
-			},
-		},
-		select = {
-			enable = true,
-			lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
-			keymaps = {
-				-- You can use the capture groups defined in textobjects.scm
-				['af'] = '@function.outer',
-				['if'] = '@function.inner',
-				['ac'] = '@class.outer',
-				['ic'] = '@class.inner'
-			}
-		},
-		move = {
-			enable = true,
-			set_jumps = true, -- whether to set jumps in the jumplist
-			goto_next_start = {
-				[']m'] = '@function.outer',
-				[']]'] = '@class.outer'
-			},
-			goto_next_end = {
-				[']M'] = '@function.outer',
-				[']['] = '@class.outer'
-			},
-			goto_previous_start = {
-				['[m'] = '@function.outer',
-				['[['] = '@class.outer'
-			},
-			goto_previous_end = {
-				['[M'] = '@function.outer',
-				['[]'] = '@class.outer'
-			}
-		}
-	}
 }
 
 
@@ -290,8 +251,8 @@ local on_attach = function(client, bufnr)
 
 	vim.api.nvim_create_user_command("Format", vim.lsp.buf.format, {})
 	if client.name == "rust_analyzer" then
-		client.resolved_capabilities.document_formatting = false
-		client.resolved_capabilities.document_range_formatting = false
+		client.server_capabilities.documentFormattingProvider = false
+		client.server_capabilities.documentRangeFormattingProvider = false
 	end
 end
 
@@ -299,7 +260,7 @@ end
 local capabilities = cmp_nvim_lsp.default_capabilities()
 
 -- Enable the following language servers
-local servers = { 'rnix', 'terraformls' }
+local servers = { 'rnix', 'terraformls', 'dockerls' }
 for _, lsp in ipairs(servers) do
 	lspconfig[lsp].setup { on_attach = on_attach, capabilities = capabilities }
 end
