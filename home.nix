@@ -1,12 +1,10 @@
-{ pkgs, config, ... }:
+{ pkgs, ... }:
 
 {
   home.packages = with pkgs; [
     aws-vault
-    awscli2
     bottom
     btop
-    cachix
     cargo
     coreutils
     curl
@@ -18,21 +16,31 @@
     entr
     fd
     fzf
+    gcc
     gh
     glow
     jq
     lazydocker
     lua
+    lua-language-server
     mosh
+    ncurses
+    nil
     nixfmt
     nixpkgs-fmt
+    nodePackages.bash-language-server
+    nodePackages.dockerfile-language-server-nodejs
+    nodePackages.vscode-json-languageserver
+    nodePackages.typescript-language-server
+    nodePackages.yaml-language-server
     onefetch
     ripgrep
-    rnix-lsp
     rustc
     sd
+    shellcheck
     shfmt
     signal-cli
+    taplo
     taskwarrior
     taskwarrior-tui
     tealdeer
@@ -46,6 +54,7 @@
     xsv
     wireguard-tools
     yubikey-manager
+    zls
   ];
 
   programs = {
@@ -67,6 +76,18 @@
           space.q = ":q";
         };
       };
+      languages = [
+        {
+          formatter = { command = "nixpkgs-fmt"; };
+          auto-format = true;
+          name = "nix";
+        }
+        {
+          name = "elixir";
+          auto-format = true;
+          config = { elixirLS.dialyzer_enabled = true; };
+        }
+      ];
     };
 
     bat = {
@@ -157,7 +178,7 @@
       userName = "Christopher Grainger";
       extraConfig = {
         github = { user = "cigrainger"; };
-        core = { editor = "nvim"; };
+        core = { editor = "hx"; };
         url = { "https://github.com" = { insteadOf = "git://github.com/"; }; };
       };
       signing = {

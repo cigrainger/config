@@ -105,8 +105,10 @@ in
       extraConfig = ''
         set -sg escape-time 0
         set -g mouse on
+        set-option -g default-terminal "xterm-256color"
+        set-option -a terminal-overrides ",*256col*:RGB"
       '';
-      tmuxp.enable = true;
+      # tmuxp.enable = true;
     };
 
     starship = {

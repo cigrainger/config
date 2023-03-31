@@ -1,22 +1,22 @@
 { pkgs, ... }:
 
 let
-  copilot-lua = pkgs.vimUtils.buildVimPluginFrom2Nix {
-    name = "copilot.lua";
+  neotest-elixir = pkgs.vimUtils.buildVimPluginFrom2Nix {
+    name = "neotest-elixir";
     src = pkgs.fetchFromGitHub {
-      owner = "zbirenbaum";
-      repo = "copilot.lua";
-      rev = "bbb518fbba065773e50bb8e71eae42f7b7f0e2b0";
-      hash = "sha256-Lj60vbmZ5BRA8p2NDXSezD0cjP5mCBlRWvt0AbaQXpY=";
+      owner = "jfpedroza";
+      repo = "neotest-elixir";
+      rev = "72ead0e41aa88582631ff7a14c13095b87c7ff75";
+      hash = "sha256-o7mecEUYnGRomt8qH67rKxHfhGqjoQmAEzwW/TIeQ/s=";
     };
   };
-  copilot-cmp = pkgs.vimUtils.buildVimPluginFrom2Nix {
-    name = "copilot-cmp";
+  neotest-rust = pkgs.vimUtils.buildVimPluginFrom2Nix {
+    name = "neotest-rust";
     src = pkgs.fetchFromGitHub {
-      owner = "zbirenbaum";
-      repo = "copilot-cmp";
-      rev = "84d5a0e8e4d1638e7554899cb7b642fa24cf463f";
-      hash = "sha256-cU3WC5mEYh6pJFZ2ezV01dCq/FTtfAdpvLTRlVAzHqA=";
+      owner = "rouge8";
+      repo = "neotest-rust";
+      rev = "ceb091b6fe30c675564b81a166064fc283eab7ae";
+      hash = "sha256-7YM3rt+QLgWsIDO86IoOOTdXzgG4BBp0p2IdO48q0Us=";
     };
   };
 in
@@ -34,9 +34,9 @@ in
     extraConfig = "lua require('init')";
 
     plugins = with pkgs.vimPlugins; [
-      (nvim-treesitter.withPlugins (plugins: pkgs.tree-sitter.allGrammars))
       catppuccin-nvim
       cmp-git
+      cmp-nvim-lua
       cmp-nvim-lsp
       cmp-nvim-lsp-signature-help
       cmp-path
@@ -51,11 +51,16 @@ in
       leap-nvim
       lualine-nvim
       luasnip
+      neodev-nvim
+      neotest
+      # neotest-elixir
+      # neotest-rust
       null-ls-nvim
       nvim-cmp
       nvim-lspconfig
       nvim-notify
       nvim-tree-lua
+      nvim-treesitter.withAllGrammars
       nvim-web-devicons
       octo-nvim
       rust-tools-nvim
@@ -64,21 +69,26 @@ in
       todo-comments-nvim
       trouble-nvim
       vim-nix
-      vim-tmux-navigator
       vim-repeat
       vim-surround
+      vim-tmux-navigator
       which-key-nvim
       wilder-nvim
     ];
 
     extraPackages = with pkgs; [
-      nodePackages.dockerfile-language-server-nodejs
       elixir_ls
+      hadolint
+      lua
+      lua-language-server
+      nodePackages.dockerfile-language-server-nodejs
       nodejs
       rnix-lsp
-      sumneko-lua-language-server
+      shellcheck
       taplo
       terraform-ls
+      tfsec
+      tree-sitter
     ];
   };
 }
