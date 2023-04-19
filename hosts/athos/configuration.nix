@@ -78,7 +78,7 @@
 
     openssh = {
       enable = true;
-      passwordAuthentication = false;
+      settings = { passwordAuthentication = false; };
     };
 
     redis.servers = { "" = { enable = true; }; };
