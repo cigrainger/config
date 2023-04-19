@@ -37,18 +37,22 @@
       brew "redis", restart_service: :changed
       brew "stripe/stripe-mock/stripe-mock", restart_service: :changed
     '';
+    taps = [ "homebrew/services" "stripe/stripe-mock" ];
     brews = [
       "act"
       "asdf"
       "awscli"
       "flyctl"
       "gcc"
+      "helix"
       "imagemagick"
       "pinentry-mac"
       "wxwidgets"
+      "reattach-to-user-namespace"
     ];
     casks = [
       "1Password"
+      "anki"
       "authy"
       "bartender"
       "brave-browser"
@@ -58,9 +62,6 @@
       "discord"
       "element"
       "firefox"
-      "font-hasklug-nerd-font"
-      "font-iosevka-nerd-font"
-      "font-monoid-nerd-font"
       "github"
       "iina"
       "insomnia"
@@ -70,7 +71,6 @@
       "loom"
       "mactex-no-gui"
       "maestral"
-      "paw"
       "raycast"
       "rstudio"
       "signal"
@@ -81,7 +81,6 @@
       "unetbootin"
       "viscosity"
       "visual-studio-code"
-      "wickrme"
       "zoom"
       "zotero"
     ];

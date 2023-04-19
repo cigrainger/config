@@ -1,12 +1,18 @@
 -- Locals
+local ai = require("mini.ai")
+local bracketed = require('mini.bracketed')
+local bufferline = require("bufferline")
 local catppuccin = require("catppuccin")
 local cmp = require("cmp")
 local cmp_git = require("cmp_git")
 local cmp_nvim_lsp = require("cmp_nvim_lsp")
-local comment = require("Comment")
+local comment = require("mini.comment")
 local copilot = require("copilot")
 local copilot_cmp = require("copilot_cmp")
 local crates = require("crates")
+local elixir = require("elixir")
+local elixirls = require("elixir.elixirls")
+local flit = require("flit")
 local gitsigns = require("gitsigns")
 local gs = package.loaded.gitsigns
 local leap = require("leap")
@@ -19,6 +25,7 @@ local null_ls = require("null-ls")
 local nvim_tree = require("nvim-tree")
 local octo = require("octo")
 local rust_tools = require("rust-tools")
+local surround = require("nvim-surround")
 local telescope = require("telescope")
 local telescope_builtin = require("telescope.builtin")
 local todo_comments = require("todo-comments")
@@ -33,13 +40,13 @@ local border = {
 }
 
 -- General settings
-vim.o.hlsearch = false -- Set highlight on search
-vim.wo.number = true -- Make line numbers default
-vim.o.mouse = 'a' -- Enable mouse mode
-vim.o.breakindent = true -- Enable break indent
-vim.opt.undofile = true -- Save undo history
+vim.o.hlsearch = false                 -- Set highlight on search
+vim.wo.number = true                   -- Make line numbers default
+vim.o.mouse = 'a'                      -- Enable mouse mode
+vim.o.breakindent = true               -- Enable break indent
+vim.opt.undofile = true                -- Save undo history
 vim.o.completeopt = 'menuone,noselect' -- Set completeopt to have a better completion experience
-vim.opt.termguicolors = true -- Use termguicolors
+vim.opt.termguicolors = true           -- Use termguicolors
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 vim.opt.tabstop = 2
@@ -61,13 +68,59 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Setup
-catppuccin.setup {
-  styles = {
-    comments = { "italic" },
-    functions = {},
-    keywords = {},
-    strings = {},
-    variables = {},
+
+bufferline.setup({ options = { diagnostics = "nvim_lsp" } }) -- Bufferline
+
+catppuccin.setup({
+  integrations = { mini = true }
+})
+
+-- Mini
+ai.setup()
+bracketed.setup()
+comment.setup()
+
+flit.setup()
+
+surround.setup()
+
+lualine.setup({
+  options = { section_separators = '', component_separators = '', theme = 'catppuccin' }
+})
+
+elixir.setup {
+  credo = { enable = true },
+  elixirls = {
+    cmd = "/etc/elixir-ls/language_server.sh",
+    settings = elixirls.settings {
+      dialyzerEnabled = true,
+      fetchDeps = true,
+      enableTestLenses = true,
+      suggestSpecs = true,
+    },
+    on_attach = function(_, bufnr)
+      local lsp_leader_keymaps = {
+        c = {
+          D = { vim.lsp.buf.declaration, "Go to declaration" },
+          d = { telescope_builtin.lsp_definitions, "Go to definition" },
+          i = { telescope_builtin.lsp_implementations, "Go to implementation" },
+          k = { vim.lsp.buf.signature_help, "Signature help" },
+          a = { vim.lsp.buf.code_actions, "Code actions" },
+          r = { telescope_builtin.lsp_references, "List references" },
+          t = { telescope_builtin.lsp_type_definitions, "Jump to type definition" },
+          n = { vim.lsp.buf.rename, "Rename symbol" },
+          s = { telescope_builtin.lsp_document_symbols, "List document symbols" },
+          l = { vim.lsp.codelens.run, "Run the codelens under the cursor" },
+        },
+        fp = { ":ElixirFromPipe<cr>", "Remove the pipe operator" },
+        tp = { ":ElixirToPipe<cr>", "Add the pipe operator" },
+        me = { ":ElixirExpandMacro<cr>", "Expand macro" },
+      }
+      wk.register(lsp_leader_keymaps, { prefix = "<leader>", buffer = bufnr })
+      wk.register({ K = { vim.lsp.buf.hover, "Hover" } })
+
+      vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format { async = false } ]] -- format on save
+    end
   }
 }
 
@@ -78,7 +131,7 @@ cmp.setup {
     end,
   },
   mapping = cmp.mapping.preset.insert({
-    ['<C-d>'] = cmp.mapping.scroll_docs( -4),
+    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<CR>'] = cmp.mapping.confirm {
@@ -97,30 +150,26 @@ cmp.setup {
     ['<S-Tab>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_prev_item()
-      elseif luasnip.jumpable( -1) then
-        luasnip.jump( -1)
+      elseif luasnip.jumpable(-1) then
+        luasnip.jump(-1)
       else
         fallback()
       end
     end, { 'i', 's' }),
   }),
   sources = {
-    { name = "copilot" },
-    { name = "git" },
-    { name = 'luasnip' },
-    { name = 'nvim_lua' },
+    { name = 'copilot' },
     { name = 'nvim_lsp' },
     { name = 'nvim_lsp_signature_help' },
+    { name = 'nvim_lua' },
+    { name = 'git' },
+    { name = 'luasnip' },
     { name = 'path' },
-    { name = 'rg' },
+    { name = 'rg',                     keyword_length = 3 },
   },
   window = {
-    documentation = {
-      border = border,
-    },
-    completion = {
-      border = border,
-    },
+    completion = { border = border },
+    documentation = { border = border }
   },
 }
 
@@ -134,8 +183,6 @@ end, 200)
 
 cmp_git.setup()
 
-comment.setup {}
-
 crates.setup {
   null_ls = {
     enabled = true,
@@ -147,15 +194,9 @@ gitsigns.setup { current_line_blame = true }
 
 leap.add_default_mappings()
 
-lualine.setup {
-  options = {
-    theme = 'catppuccin',
-  }
-}
-
 neodev.setup({
   override = function(root_dir, library)
-    if require("neodev.util").has_file(root_dir, "/Users/chris/code/config/configs/nvim") then
+    if require("neodev.util").has_file(root_dir, "~/code/config/configs/nvim") then
       library.enabled = true
       library.plugins = true
     end
@@ -164,19 +205,19 @@ neodev.setup({
 
 neotest.setup({
   adapters = {
-    -- require("neotest-elixir"),
-    -- require("neotest-rust"),
+    require("neotest-elixir"),
+    require("neotest-rust"),
   },
 })
 
 null_ls.setup({
   sources = {
-    null_ls.builtins.diagnostics.credo,
     null_ls.builtins.formatting.prettier,
     null_ls.builtins.formatting.rustfmt,
     null_ls.builtins.formatting.shfmt,
-    null_ls.builtins.formatting.taplo,
-    null_ls.builtins.code_actions.gitsigns,
+    null_ls.builtins.diagnostics.actionlint,
+    null_ls.builtins.diagnostics.deadnix,
+    null_ls.builtins.diagnostics.dotenv_linter,
     null_ls.builtins.diagnostics.hadolint,
     null_ls.builtins.diagnostics.tfsec,
     null_ls.builtins.diagnostics.shellcheck,
@@ -198,17 +239,13 @@ telescope.setup {
   defaults = {
     mappings = {
       i = {
-        ['<C-u>'] = false,['<C-d>'] = false,
+        ['<C-u>'] = false,
+        ['<C-d>'] = false,
         ["<c-t>"] = trouble.open_with_trouble
       },
       n = {
         ["<c-t>"] = trouble.open_with_trouble
       }
-    }
-  },
-  pickers = {
-    find_files = {
-      theme = "dropdown",
     }
   },
   extensions = {
@@ -234,21 +271,6 @@ require('nvim-treesitter.configs').setup {
   highlight = {
     enable = true -- false will disable the whole extension
   },
-  incremental_selection = {
-    enable = true,
-    keymaps = {
-      init_selection = 'gnn',
-      node_incremental = 'grn',
-      scope_incremental = 'grc',
-      node_decremental = 'grm'
-    }
-  },
-  rainbow = {
-    enable = true,
-    extended_mode = true,
-    max_file_lines = nil,
-  },
-  indent = { enable = true },
 }
 
 
@@ -286,7 +308,7 @@ end
 local capabilities = cmp_nvim_lsp.default_capabilities()
 
 -- Enable the following language servers
-local servers = { 'rnix', 'terraformls', 'dockerls' }
+local servers = { 'rnix', 'terraformls', 'dockerls', 'bashls', 'taplo', 'yamlls', 'tailwindcss' }
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup { on_attach = on_attach, capabilities = capabilities }
 end
@@ -316,12 +338,8 @@ lspconfig.lua_ls.setup {
       },
     },
   },
-}
-
-lspconfig.elixirls.setup {
   on_attach = on_attach,
-  capabilities = capabilities,
-  cmd = { "/etc/elixir-ls/language_server.sh" }
+  capabilities = capabilities
 }
 
 rust_tools.setup({ server = { on_attach = on_attach } })
@@ -344,8 +362,9 @@ wilder.set_option('renderer', wilder.popupmenu_renderer(
 
 -- Keymaps
 wk.register({
+  ["/"] = { function() telescope_builtin.live_grep(require('telescope.themes').get_ivy({})) end, "Search project" },
   e = { vim.diagnostic.open_float, "Open diagnostic" },
-  ["<space>"] = { telescope_builtin.buffers, "Search buffers" },
+  ["<space>"] = { function() telescope_builtin.find_files(require('telescope.themes').get_ivy({})) end, "Search buffers" },
   z = {
   },
   h = {
@@ -379,8 +398,8 @@ wk.register({
   },
   t = {
     name = "Test",
-    n = { neotest.run.run(), "Test nearest" },
-    f = { neotest.run.run(vim.fn.expand("%")), "Test file" },
+    n = { neotest.run.run, "Test nearest" },
+    f = { function() neotest.run.run(vim.fn.expand("%")) end, "Test file" },
   },
   q = {
     name = "Quit",

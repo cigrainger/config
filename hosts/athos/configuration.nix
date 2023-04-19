@@ -5,7 +5,6 @@
 
   hardware = {
     bluetooth.enable = true;
-    video.hidpi.enable = true;
     nvidia.modesetting.enable = true;
     opengl = {
       enable = true;
@@ -43,7 +42,6 @@
     nameservers = [ "1.1.1.1" "1.0.0.1" ];
     networkmanager.enable = true;
     firewall = {
-      allowedUDPPorts = [ ${services.tailscale.port} ];
       extraCommands = ''
         ip46tables -I INPUT 1 -i vboxnet+ -p tcp -m tcp --dport 2049 -j ACCEPT
       '';
@@ -101,8 +99,6 @@
     };
   };
 
-  tailscale.enable = true;
-
   virtualisation = {
     virtualbox.host.enable = true;
     podman = {
@@ -112,6 +108,8 @@
       enableNvidia = true;
     };
   };
+
+  services.xserver.videoDrivers = [ "nvidia" "modesetting" ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

@@ -1,6 +1,15 @@
 { pkgs, ... }:
 
 let
+  elixir-tools-nvim = pkgs.vimUtils.buildVimPluginFrom2Nix {
+    name = "elixir-tools.nvim";
+    src = pkgs.fetchFromGitHub {
+      owner = "elixir-tools";
+      repo = "elixir-tools.nvim";
+      rev = "8f40d76710d1d43c114c983afedf7fac902a3445";
+      hash = "sha256-JZwUvYhMwK7t5wpzfLtTgLYhcOQAx5Z9jdlTzdVKCRE=";
+    };
+  };
   neotest-elixir = pkgs.vimUtils.buildVimPluginFrom2Nix {
     name = "neotest-elixir";
     src = pkgs.fetchFromGitHub {
@@ -15,8 +24,8 @@ let
     src = pkgs.fetchFromGitHub {
       owner = "rouge8";
       repo = "neotest-rust";
-      rev = "ceb091b6fe30c675564b81a166064fc283eab7ae";
-      hash = "sha256-7YM3rt+QLgWsIDO86IoOOTdXzgG4BBp0p2IdO48q0Us=";
+      rev = "5bb78ad3c1c11a28a2c48af59056455841e6546f";
+      hash = "sha256-b0hJhfIDvcuoDHkj0hVY+xYqYjdTuYyZ1/SljLE9K3M=";
     };
   };
 in
@@ -34,31 +43,35 @@ in
     extraConfig = "lua require('init')";
 
     plugins = with pkgs.vimPlugins; [
+      bufferline-nvim
       catppuccin-nvim
       cmp-git
       cmp-nvim-lua
       cmp-nvim-lsp
       cmp-nvim-lsp-signature-help
+      cmp-nvim-lsp-document-symbol
       cmp-path
       cmp-rg
       cmp_luasnip
-      comment-nvim
       copilot-cmp
       copilot-lua
       crates-nvim
+      elixir-tools-nvim
+      flit-nvim
       friendly-snippets
       gitsigns-nvim
       leap-nvim
       lualine-nvim
       luasnip
+      mini-nvim
       neodev-nvim
       neotest
-      # neotest-elixir
-      # neotest-rust
+      neotest-elixir
+      neotest-rust
       null-ls-nvim
       nvim-cmp
       nvim-lspconfig
-      nvim-notify
+      nvim-surround
       nvim-tree-lua
       nvim-treesitter.withAllGrammars
       nvim-web-devicons
@@ -68,26 +81,20 @@ in
       telescope-nvim
       todo-comments-nvim
       trouble-nvim
-      vim-nix
-      vim-repeat
-      vim-surround
       vim-tmux-navigator
       which-key-nvim
       wilder-nvim
     ];
 
     extraPackages = with pkgs; [
-      elixir_ls
+      actionlint
+      deadnix
+      dotenv-linter
       hadolint
-      lua
-      lua-language-server
-      nodePackages.dockerfile-language-server-nodejs
       nodejs
       rnix-lsp
-      shellcheck
-      taplo
-      terraform-ls
       tfsec
+      nodePackages.prettier
       tree-sitter
     ];
   };
