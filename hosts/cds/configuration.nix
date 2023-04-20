@@ -75,6 +75,7 @@
       "rstudio"
       "signal"
       "tableplus"
+      "tailscale"
       "textual"
       "tidal"
       "transmission"
