@@ -3,6 +3,7 @@ local ai = require("mini.ai")
 local bracketed = require('mini.bracketed')
 local bufferline = require("bufferline")
 local catppuccin = require("catppuccin")
+local chatgpt = require("chatgpt")
 local cmp = require("cmp")
 local cmp_git = require("cmp_git")
 local cmp_nvim_lsp = require("cmp_nvim_lsp")
@@ -72,13 +73,43 @@ vim.g.maplocalleader = ' '
 bufferline.setup({ options = { diagnostics = "nvim_lsp" } }) -- Bufferline
 
 catppuccin.setup({
-  integrations = { mini = true }
+  integrations = {
+    cmp = true,
+    gitsigns = true,
+    nvimtree = true,
+    telescope = true,
+    notify = true,
+    mini = true,
+    dap = true,
+    leap = true,
+    treesitter = true,
+    lsp_trouble = true,
+    native_lsp = {
+      enabled = true,
+      virtual_text = {
+        errors = { "italic" },
+        hints = { "italic" },
+        warnings = { "italic" },
+        information = { "italic" },
+      },
+      underlines = {
+        errors = { "underline" },
+        hints = { "underline" },
+        warnings = { "underline" },
+        information = { "underline" },
+      },
+    },
+    which_key = true
+  }
 })
 
 -- Mini
 ai.setup()
 bracketed.setup()
 comment.setup()
+chatgpt.setup({
+  api_key_cmd = "op read \"op://Personal/OpenAI API Key/api key\" --no-newline"
+})
 
 flit.setup()
 
@@ -89,14 +120,12 @@ lualine.setup({
 })
 
 elixir.setup {
-  credo = { enable = true },
-  elixirls = {
-    cmd = "/etc/elixir-ls/language_server.sh",
-    settings = elixirls.settings {
-      dialyzerEnabled = true,
-      fetchDeps = true,
-      enableTestLenses = true,
-      suggestSpecs = true,
+  nextls = {
+    enable = true,
+    experimental = {
+      completions = {
+        enable = false -- control if completions are enabled. defaults to false
+      }
     },
     on_attach = function(_, bufnr)
       local lsp_leader_keymaps = {
@@ -112,16 +141,15 @@ elixir.setup {
           s = { telescope_builtin.lsp_document_symbols, "List document symbols" },
           l = { vim.lsp.codelens.run, "Run the codelens under the cursor" },
         },
-        fp = { ":ElixirFromPipe<cr>", "Remove the pipe operator" },
-        tp = { ":ElixirToPipe<cr>", "Add the pipe operator" },
-        me = { ":ElixirExpandMacro<cr>", "Expand macro" },
       }
       wk.register(lsp_leader_keymaps, { prefix = "<leader>", buffer = bufnr })
       wk.register({ K = { vim.lsp.buf.hover, "Hover" } })
 
       vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format { async = false } ]] -- format on save
     end
-  }
+  },
+  credo = { enable = true },
+  elixirls = { enable = false, }
 }
 
 cmp.setup {
@@ -218,7 +246,6 @@ null_ls.setup({
     null_ls.builtins.diagnostics.actionlint,
     null_ls.builtins.diagnostics.deadnix,
     null_ls.builtins.diagnostics.dotenv_linter,
-    null_ls.builtins.diagnostics.hadolint,
     null_ls.builtins.diagnostics.tfsec,
     null_ls.builtins.diagnostics.shellcheck,
   }
@@ -366,6 +393,20 @@ wk.register({
   e = { vim.diagnostic.open_float, "Open diagnostic" },
   ["<space>"] = { function() telescope_builtin.find_files(require('telescope.themes').get_ivy({})) end, "Search buffers" },
   z = {
+    name = "ChatGPT",
+    c = { "<cmd>ChatGPT<CR>", "ChatGPT" },
+    e = { "<cmd>ChatGPTEditWithInstruction<CR>", "Edit with instruction", mode = { "n", "v" } },
+    g = { "<cmd>ChatGPTRun grammar_correction<CR>", "Grammar Correction", mode = { "n", "v" } },
+    t = { "<cmd>ChatGPTRun translate<CR>", "Translate", mode = { "n", "v" } },
+    k = { "<cmd>ChatGPTRun keywords<CR>", "Keywords", mode = { "n", "v" } },
+    d = { "<cmd>ChatGPTRun docstring<CR>", "Docstring", mode = { "n", "v" } },
+    a = { "<cmd>ChatGPTRun add_tests<CR>", "Add Tests", mode = { "n", "v" } },
+    o = { "<cmd>ChatGPTRun optimize_code<CR>", "Optimize Code", mode = { "n", "v" } },
+    s = { "<cmd>ChatGPTRun summarize<CR>", "Summarize", mode = { "n", "v" } },
+    f = { "<cmd>ChatGPTRun fix_bugs<CR>", "Fix Bugs", mode = { "n", "v" } },
+    x = { "<cmd>ChatGPTRun explain_code<CR>", "Explain Code", mode = { "n", "v" } },
+    r = { "<cmd>ChatGPTRun roxygen_edit<CR>", "Roxygen Edit", mode = { "n", "v" } },
+    l = { "<cmd>ChatGPTRun code_readability_analysis<CR>", "Code Readability Analysis", mode = { "n", "v" } },
   },
   h = {
     s = { gs.stage_hunk, "Stage hunk" },
