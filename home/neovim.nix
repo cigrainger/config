@@ -1,31 +1,25 @@
 { pkgs, ... }:
 
 let
-  elixir-tools-nvim = pkgs.vimUtils.buildVimPluginFrom2Nix {
-    name = "elixir-tools.nvim";
+  elixir-tools-nvim = pkgs.vimUtils.buildVimPlugin {
+    pname = "elixir-tools.nvim";
+    version = "2023-11-08";
     src = pkgs.fetchFromGitHub {
       owner = "elixir-tools";
       repo = "elixir-tools.nvim";
-      rev = "8f40d76710d1d43c114c983afedf7fac902a3445";
-      hash = "sha256-JZwUvYhMwK7t5wpzfLtTgLYhcOQAx5Z9jdlTzdVKCRE=";
+      rev = "51399bc41e9a70b8920fcd5869eb2a3628e8facc";
+      sha256 = "sha256-AZV6bkLu2Q92pIiDh83JGL7Tue1G9bMSCCQ3Gvl/2vQ=";
     };
+    meta.homepage = "https://github.com/elixir-tools/elixir-tools.nvim/";
   };
-  neotest-elixir = pkgs.vimUtils.buildVimPluginFrom2Nix {
-    name = "neotest-elixir";
+  workspace-folders-nvim = pkgs.vimUtils.buildVimPlugin {
+    pname = "workspace-folders.nvim";
+    version = "2023-11-08";
     src = pkgs.fetchFromGitHub {
-      owner = "jfpedroza";
-      repo = "neotest-elixir";
-      rev = "72ead0e41aa88582631ff7a14c13095b87c7ff75";
-      hash = "sha256-o7mecEUYnGRomt8qH67rKxHfhGqjoQmAEzwW/TIeQ/s=";
-    };
-  };
-  neotest-rust = pkgs.vimUtils.buildVimPluginFrom2Nix {
-    name = "neotest-rust";
-    src = pkgs.fetchFromGitHub {
-      owner = "rouge8";
-      repo = "neotest-rust";
-      rev = "5bb78ad3c1c11a28a2c48af59056455841e6546f";
-      hash = "sha256-b0hJhfIDvcuoDHkj0hVY+xYqYjdTuYyZ1/SljLE9K3M=";
+      owner = "mhanberg";
+      repo = "workspace-folders.nvim";
+      rev = "2edb25739ab06a60135bf6380bc8f96325772a6f";
+      sha256 = "sha256-MPz/Y1hPc2T3NfLSaVd+xyr1FW4zF8e1b5LHlP37W1E=";
     };
   };
 in
@@ -43,8 +37,10 @@ in
     extraConfig = "lua require('init')";
 
     plugins = with pkgs.vimPlugins; [
+      aerial-nvim
       bufferline-nvim
       catppuccin-nvim
+      ChatGPT-nvim
       cmp-git
       cmp-nvim-lua
       cmp-nvim-lsp
@@ -57,10 +53,11 @@ in
       copilot-lua
       crates-nvim
       elixir-tools-nvim
-      flit-nvim
+      fidget-nvim
+      flash-nvim
       friendly-snippets
       gitsigns-nvim
-      leap-nvim
+      lspkind-nvim
       lualine-nvim
       luasnip
       mini-nvim
@@ -68,7 +65,7 @@ in
       neotest
       neotest-elixir
       neotest-rust
-      null-ls-nvim
+      none-ls-nvim
       nvim-cmp
       nvim-lspconfig
       nvim-surround
@@ -84,13 +81,13 @@ in
       vim-tmux-navigator
       which-key-nvim
       wilder-nvim
+      workspace-folders-nvim
     ];
 
     extraPackages = with pkgs; [
       actionlint
       deadnix
       dotenv-linter
-      hadolint
       nodejs
       rnix-lsp
       tfsec

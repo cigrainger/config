@@ -1,29 +1,11 @@
 { pkgs, ... }:
 
-let
-  catppuccin-tmux = pkgs.tmuxPlugins.mkTmuxPlugin {
-    pluginName = "catppuccin";
-    version = "unstable-2022-12-14";
-    src = pkgs.fetchFromGitHub {
-      owner = "catppuccin";
-      repo = "tmux";
-      rev = "4e48b09a76829edc7b55fbb15467cf0411f07931";
-      sha256 = "sha256-bXEsxt4ozl3cAzV3ZyvbPsnmy0RAdpLxHwN82gvjLdU=";
-    };
-    postInstall = ''
-      sed -i -e 's|''${PLUGIN_DIR}/catppuccin-selected-theme.tmuxtheme|''${TMUX_TMPDIR}/catppuccin-selected-theme.tmuxtheme|g' $target/catppuccin.tmux
-    '';
-    meta = with pkgs.lib; {
-      homepage = "https://github.com/catppuccin/tmux";
-      description = "Soothing pastel theme for Tmux!";
-      license = licenses.mit;
-      platforms = platforms.unix;
-      maintainers = with maintainers; [ jnsgruk ];
-    };
+{
+  xdg.configFile."fish/themes" = {
+    source = ../configs/fish/themes;
+    recursive = true;
   };
 
-in
-{
   programs = {
     fish = {
       enable = true;
@@ -48,6 +30,9 @@ in
         --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
         --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
         --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8"
+
+        fish_add_path /opt/homebrew/bin
+        source /Users/chris/.config/op/plugins.sh
       '';
 
       functions = {
@@ -63,6 +48,17 @@ in
           end
         '';
       };
+      plugins = [
+        {
+          name = "catppuccin";
+          src = pkgs.fetchFromGitHub {
+            owner = "catppuccin";
+            repo = "fish";
+            rev = "0ce27b518e8ead555dec34dd8be3df5bd75cff8e";
+            sha256 = "sha256-Dc/zdxfzAUM5NX8PxzfljRbYvO9f9syuLO8yBr+R3qg=";
+          };
+        }
+      ];
 
       shellAliases = {
         cat = "bat";
@@ -112,14 +108,26 @@ in
       keyMode = "vi";
       mouse = true;
       terminal = "screen-256color";
+      extraConfig = ''
+        set-option -g history-limit 10000
+      '';
       plugins = with pkgs.tmuxPlugins; [
         {
-          plugin = catppuccin-tmux;
+          plugin = catppuccin;
           extraConfig = ''
-            set -g @catppuccin_window_tabs_enabled on
-            set -g @catppuccin_left_separator "█"
-            set -g @catppuccin_right_separator "█"
-            set -g @catppuccin_date_time "%Y-%m-%d %H:%M"
+            set -g @catppuccin_window_right_separator "█ "
+            set -g @catppuccin_window_number_position "right"
+            set -g @catppuccin_window_middle_separator " | "
+
+            set -g @catppuccin_window_default_fill "none"
+
+            set -g @catppuccin_window_current_fill "all"
+
+            set -g @catppuccin_status_modules_right "application session user host date_time"
+            set -g @catppuccin_status_left_separator "█"
+            set -g @catppuccin_status_right_separator "█"
+
+            set -g @catppuccin_date_time_text "%Y-%m-%d %H:%M:%S"
           '';
         }
         fuzzback

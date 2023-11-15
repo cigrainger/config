@@ -1,18 +1,23 @@
 { pkgs, config, ... }:
 
+let
+  local_elixir = pkgs.beam.packages.erlangR26.elixir_1_15;
+in
 {
   home.packages = with pkgs; [
     aws-vault
+    awscli2
     cargo
+    cmake
     coreutils
     curl
     dog
     du-dust
     duf
-    beam.packages.erlangR25.elixir_1_14
-    erlangR25
+    erlangR26
     erlang-ls
-    elixir_ls
+    flyctl
+    local_elixir
     entr
     fd
     gcc
@@ -22,6 +27,7 @@
     lazydocker
     lua
     lua-language-server
+    minio-client
     mosh
     ncurses
     nil
@@ -34,6 +40,7 @@
     nodePackages.typescript-language-server
     nodePackages.yaml-language-server
     onefetch
+    openai
     ripgrep
     rust-analyzer
     rustfmt
@@ -91,39 +98,9 @@
 
     navi.enable = true;
 
-    exa = { enable = true; };
+    eza.enable = true;
 
     zoxide.enable = true;
-
-    helix = {
-      enable = true;
-      settings = {
-        theme = "kanagawa";
-        editor = {
-          soft-wrap.enable = true;
-          lsp.display-messages = true;
-          indent-guides.render = true;
-        };
-        keys.normal = {
-          space.space = "file_picker";
-          space.w = ":w";
-          space.q = ":q";
-          space.H = ":toggle lsp.display-inlay-hints";
-        };
-      };
-      languages = [
-        {
-          formatter = { command = "nixpkgs-fmt"; };
-          auto-format = true;
-          name = "nix";
-        }
-        {
-          name = "elixir";
-          auto-format = true;
-          config = { elixirLS.dialyzer_enabled = true; };
-        }
-      ];
-    };
 
     bat = {
       enable = true;
@@ -216,17 +193,23 @@
           side-by-side = true;
         };
       };
-      ignores = [ ".nix-mix" ".nix-hex" ".direnv" "shell.nix" ".envrc" ".vscode" ];
+      ignores = [ ".nix-mix" ".nix-hex" ".direnv" "shell.nix" ".envrc" ".vscode" ".code-workspace" ];
       lfs.enable = true;
       userEmail = "chris@amplified.ai";
       userName = "Christopher Grainger";
       extraConfig = {
         github = { user = "cigrainger"; };
         core = { editor = "nvim"; };
+        gpg = {
+          "ssh" = {
+            program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+          };
+          format = "ssh";
+        };
         url = { "https://github.com" = { insteadOf = "git://github.com/"; }; };
       };
       signing = {
-        key = "2DAADC742D1B5395";
+        key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBIx4VvOw1EP5oCaWa6OTB9oJxZMkd9gQj8Kwf3lcC5y";
         signByDefault = true;
       };
     };
@@ -238,3 +221,6 @@
     };
   };
 }
+
+
+

@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ ... }:
 
 {
   imports = [ ../common/configuration.nix ];
@@ -29,29 +29,28 @@
   homebrew = {
     enable = true;
     onActivation = {
-      upgrade = true;
+      autoUpdate = true;
       cleanup = "zap";
+      upgrade = true;
     };
-    brewPrefix = "/opt/homebrew/bin";
-    extraConfig = ''
-      brew "redis", restart_service: :changed
-      brew "stripe/stripe-mock/stripe-mock", restart_service: :changed
-    '';
-    taps = [ "homebrew/services" "stripe/stripe-mock" ];
+    taps = [ "homebrew/services" "homebrew/cask-fonts" ];
     brews = [
       "act"
       "asdf"
-      "awscli"
-      "flyctl"
       "gcc"
-      "helix"
       "imagemagick"
+      "libomp"
       "pinentry-mac"
       "wxwidgets"
       "reattach-to-user-namespace"
+      {
+        name = "redis";
+        restart_service = "changed";
+      }
     ];
     casks = [
       "1Password"
+      "1password-cli"
       "anki"
       "authy"
       "bartender"
@@ -70,8 +69,11 @@
       "linear-linear"
       "loom"
       "mactex-no-gui"
-      "maestral"
+      "notion"
       "raycast"
+      "font-roboto-mono"
+      "font-iosevka-nerd-font"
+      "font-victor-mono-nerd-font"
       "rstudio"
       "signal"
       "tableplus"

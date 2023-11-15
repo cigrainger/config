@@ -1,4 +1,5 @@
 -- Locals
+local aerial = require("aerial");
 local ai = require("mini.ai")
 local bracketed = require('mini.bracketed')
 local bufferline = require("bufferline")
@@ -12,12 +13,12 @@ local copilot = require("copilot")
 local copilot_cmp = require("copilot_cmp")
 local crates = require("crates")
 local elixir = require("elixir")
-local elixirls = require("elixir.elixirls")
-local flit = require("flit")
+local fidget = require("fidget")
+local flash = require("flash")
 local gitsigns = require("gitsigns")
 local gs = package.loaded.gitsigns
-local leap = require("leap")
 local lspconfig = require("lspconfig")
+local lspkind = require("lspkind")
 local lualine = require("lualine")
 local luasnip = require("luasnip")
 local neodev = require("neodev")
@@ -33,12 +34,6 @@ local todo_comments = require("todo-comments")
 local trouble = require("trouble")
 local wilder = require("wilder")
 local wk = require("which-key")
-
-local border = {
-  { "╭", "FloatBorder" }, { "─", "FloatBorder" }, { "╮", "FloatBorder" },
-  { "│", "FloatBorder" }, { "╯", "FloatBorder" }, { "─", "FloatBorder" },
-  { "╰", "FloatBorder" }, { "│", "FloatBorder" }
-}
 
 -- General settings
 vim.o.hlsearch = false                 -- Set highlight on search
@@ -70,18 +65,28 @@ vim.g.maplocalleader = ' '
 
 -- Setup
 
+aerial.setup({
+  -- optionally use on_attach to set keymaps when aerial has attached to a buffer
+  on_attach = function(bufnr)
+    -- Jump forwards/backwards with '{' and '}'
+    vim.keymap.set("n", "{", "<cmd>AerialPrev<CR>", { buffer = bufnr })
+    vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
+  end,
+})
+
 bufferline.setup({ options = { diagnostics = "nvim_lsp" } }) -- Bufferline
 
 catppuccin.setup({
   integrations = {
+    aerial = true,
     cmp = true,
+    flash = true,
     gitsigns = true,
     nvimtree = true,
     telescope = true,
     notify = true,
-    mini = true,
+    mini = { enabled = true },
     dap = true,
-    leap = true,
     treesitter = true,
     lsp_trouble = true,
     native_lsp = {
@@ -99,19 +104,28 @@ catppuccin.setup({
         information = { "underline" },
       },
     },
+    octo = true,
     which_key = true
   }
 })
+
+fidget.setup()
+flash.setup()
 
 -- Mini
 ai.setup()
 bracketed.setup()
 comment.setup()
 chatgpt.setup({
-  api_key_cmd = "op read \"op://Personal/OpenAI API Key/api key\" --no-newline"
+  api_key_cmd = "op read op://Private/OpenAI/api_key --no-newline --account amplifiedai",
+  openai_params = {
+    model = "gpt-3.5-turbo-1106",
+    max_tokens = 1000
+  },
+  openai_edit_params = {
+    model = "gpt-3.5-turbo-1106"
+  }
 })
-
-flit.setup()
 
 surround.setup()
 
@@ -148,7 +162,7 @@ elixir.setup {
       vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format { async = false } ]] -- format on save
     end
   },
-  credo = { enable = true },
+  credo = { enable = false },
   elixirls = { enable = false, }
 }
 
@@ -157,6 +171,19 @@ cmp.setup {
     expand = function(args)
       luasnip.lsp_expand(args.body)
     end,
+  },
+  formatting = {
+    format = lspkind.cmp_format({
+      mode = 'symbol',       -- show only symbol annotations
+      maxwidth = 50,         -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
+      ellipsis_char = '...', -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
+
+      -- The function below will be called before any actual modifications from lspkind
+      -- so that you can provide more controls on popup customization. (See [#30](https://github.com/onsails/lspkind-nvim/pull/30))
+      before = function(entry, vim_item)
+        return vim_item
+      end
+    })
   },
   mapping = cmp.mapping.preset.insert({
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
@@ -193,12 +220,11 @@ cmp.setup {
     { name = 'git' },
     { name = 'luasnip' },
     { name = 'path' },
-    { name = 'rg',                     keyword_length = 3 },
   },
   window = {
-    completion = { border = border },
-    documentation = { border = border }
-  },
+    completion = cmp.config.window.bordered(),
+    documentation = cmp.config.window.bordered(),
+  }
 }
 
 vim.defer_fn(function()
@@ -211,16 +237,10 @@ end, 200)
 
 cmp_git.setup()
 
-crates.setup {
-  null_ls = {
-    enabled = true,
-    name = "crates.nvim",
-  },
-}
+crates.setup {}
 
 gitsigns.setup { current_line_blame = true }
 
-leap.add_default_mappings()
 
 neodev.setup({
   override = function(root_dir, library)
@@ -449,6 +469,7 @@ wk.register({
   },
   o = {
     name = "Open",
+    a = { "<cmd>AerialToggle!<CR>", "Aerial" },
     n = { "<cmd>NvimTreeToggle<CR>", "Tree" }
   },
   f = {
@@ -477,8 +498,6 @@ wk.register({
 wk.register({
   ["[d"] = { vim.diagnostic.goto_prev, "Previous diagnostic" },
   ["]d"] = { vim.diagnostic.goto_next, "Next diagnostic" },
-  ["[t"] = { "<Plug>(ultest-prev-fail)", "Previous failing test" },
-  ["]t"] = { "<Plug>(ultest-next-fail)", "Next failing test" },
   ["[c"] = { function()
     if vim.wo.diff then return '[c' end
     vim.schedule(function() gs.prev_hunk() end)
@@ -503,3 +522,12 @@ wk.register({
     return '<Ignore>'
   end, "Next diagnostic" },
 }, { mode = "v" })
+
+wk.register({
+  s = { function() flash.jump() end, "Flash" },
+  S = { function() flash.treesitter() end, "Flash Treesitter" }
+}, { mode = { "n", "x", "o" } })
+
+wk.register({ r = { function() flash.remote() end, "Remote Flash" } }, { mode = "o" })
+wk.register({ R = { function() flash.treesitter_search() end, "Treesitter Search" } }, { mode = { "o", "x" } })
+wk.register({ ["<c-s>"] = { function() flash.toggle() end, "Toggle Flash Search" } }, { mode = "c" })

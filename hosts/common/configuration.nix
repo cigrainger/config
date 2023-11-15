@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, system, ... }:
 
 {
   nix = {
@@ -17,9 +17,6 @@
   };
 
   environment = {
-    etc."elixir-ls/language_server.sh".source =
-      "${pkgs.elixir_ls}/lib/language_server.sh";
-
     pathsToLink = [ "/share/fish" ];
 
     shells = with pkgs; [ fish ];
