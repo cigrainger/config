@@ -12,7 +12,6 @@ local comment = require("mini.comment")
 local copilot = require("copilot")
 local copilot_cmp = require("copilot_cmp")
 local crates = require("crates")
-local elixir = require("elixir")
 local fidget = require("fidget")
 local flash = require("flash")
 local gitsigns = require("gitsigns")
@@ -22,7 +21,6 @@ local lspkind = require("lspkind")
 local lualine = require("lualine")
 local luasnip = require("luasnip")
 local neodev = require("neodev")
-local neotest = require("neotest")
 local null_ls = require("null-ls")
 local nvim_tree = require("nvim-tree")
 local octo = require("octo")
@@ -133,39 +131,6 @@ lualine.setup({
   options = { section_separators = '', component_separators = '', theme = 'catppuccin' }
 })
 
-elixir.setup {
-  nextls = {
-    enable = true,
-    experimental = {
-      completions = {
-        enable = false -- control if completions are enabled. defaults to false
-      }
-    },
-    on_attach = function(_, bufnr)
-      local lsp_leader_keymaps = {
-        c = {
-          D = { vim.lsp.buf.declaration, "Go to declaration" },
-          d = { telescope_builtin.lsp_definitions, "Go to definition" },
-          i = { telescope_builtin.lsp_implementations, "Go to implementation" },
-          k = { vim.lsp.buf.signature_help, "Signature help" },
-          a = { vim.lsp.buf.code_actions, "Code actions" },
-          r = { telescope_builtin.lsp_references, "List references" },
-          t = { telescope_builtin.lsp_type_definitions, "Jump to type definition" },
-          n = { vim.lsp.buf.rename, "Rename symbol" },
-          s = { telescope_builtin.lsp_document_symbols, "List document symbols" },
-          l = { vim.lsp.codelens.run, "Run the codelens under the cursor" },
-        },
-      }
-      wk.register(lsp_leader_keymaps, { prefix = "<leader>", buffer = bufnr })
-      wk.register({ K = { vim.lsp.buf.hover, "Hover" } })
-
-      vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format { async = false } ]] -- format on save
-    end
-  },
-  credo = { enable = false },
-  elixirls = { enable = false, }
-}
-
 cmp.setup {
   snippet = {
     expand = function(args)
@@ -249,13 +214,6 @@ neodev.setup({
       library.plugins = true
     end
   end,
-})
-
-neotest.setup({
-  adapters = {
-    require("neotest-elixir"),
-    require("neotest-rust"),
-  },
 })
 
 null_ls.setup({
@@ -355,10 +313,17 @@ end
 local capabilities = cmp_nvim_lsp.default_capabilities()
 
 -- Enable the following language servers
-local servers = { 'rnix', 'terraformls', 'dockerls', 'bashls', 'taplo', 'yamlls', 'tailwindcss' }
+local servers = { 'rnix', 'terraformls', 'dockerls', 'bashls', 'taplo', 'yamlls', 'tailwindcss', 'elixirls' }
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup { on_attach = on_attach, capabilities = capabilities }
 end
+
+lspconfig.elixirls.setup {
+  cmd = { "elixir-ls" },
+  on_attach = on_attach,
+  capabilities = capabilities
+}
+
 
 lspconfig.lua_ls.setup {
   settings = {
@@ -456,11 +421,6 @@ wk.register({
     l = { "<cmd>Trouble<CR>", "Toggle trouble loclist" },
     q = { "<cmd>Trouble<CR>", "Toggle trouble quickfix" },
     h = { gs.setqflist, "Toggle git hunks in quickfix" },
-  },
-  t = {
-    name = "Test",
-    n = { neotest.run.run, "Test nearest" },
-    f = { function() neotest.run.run(vim.fn.expand("%")) end, "Test file" },
   },
   q = {
     name = "Quit",
