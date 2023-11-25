@@ -1,7 +1,5 @@
-{ ... }:
-
-{
-  imports = [ ../common/configuration.nix ];
+{...}: {
+  imports = [../common/configuration.nix];
 
   nix = {
     configureBuildUsers = true;
@@ -20,7 +18,6 @@
     };
   };
 
-
   # Auto upgrade nix package and the daemon service.
   services.nix-daemon.enable = true;
 
@@ -33,13 +30,15 @@
       cleanup = "zap";
       upgrade = true;
     };
-    taps = [ "homebrew/services" "homebrew/cask-fonts" ];
+    taps = ["homebrew/services" "homebrew/cask-fonts"];
     brews = [
       "act"
       "asdf"
+      "awscli"
       "gcc"
       "imagemagick"
       "libomp"
+      "lua-language-server"
       "pinentry-mac"
       "wxwidgets"
       "reattach-to-user-namespace"

@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   xdg.configFile."fish/themes" = {
     source = ../configs/fish/themes;
     recursive = true;
@@ -21,7 +19,7 @@
       interactiveShellInit = ''
         set fish_greeting
         set -gx AWS_VAULT_PROMPT "ykman"
-        set -gx EDITOR "nvim"
+        set -gx EDITOR "hx"
         set -gx GIT_PAGER "delta --dark"
         set -x GPG_TTY (tty)
         set -gx ERL_AFLAGS "-kernel shell_history_enabled"
@@ -63,8 +61,6 @@
       shellAliases = {
         cat = "bat";
         lazygit = "TERM=xterm-256color command lazygit";
-        vim = "nvim";
-        vi = "nvim";
         ls = "exa --icons --color=auto";
         ll = "exa -lah --icons";
         ave = "aws-vault exec";
@@ -73,32 +69,33 @@
       };
     };
 
-    starship =
-      let
-        flavour = "mocha";
-      in
-      {
-        enable = true;
-        settings = {
+    starship = let
+      flavour = "mocha";
+    in {
+      enable = true;
+      settings =
+        {
           format = "$all"; # Remove this line to disable the default prompt format
           palette = "catppuccin_${flavour}";
-        } // builtins.fromTOML (builtins.readFile
+        }
+        // builtins.fromTOML (builtins.readFile
           (pkgs.fetchFromGitHub
             {
               owner = "catppuccin";
               repo = "starship";
               rev = "3e3e54410c3189053f4da7a7043261361a1ed1bc";
               sha256 = "sha256-soEBVlq3ULeiZFAdQYMRFuswIIhI9bclIU8WXjxd7oY=";
-            } + /palettes/${flavour}.toml));
-      };
+            }
+            + /palettes/${flavour}.toml));
+    };
 
     fzf = {
       enable = true;
       changeDirWidgetCommand = "fd --type d";
-      changeDirWidgetOptions = [ "--preview 'tree -C {} | head -200'" ];
+      changeDirWidgetOptions = ["--preview 'tree -C {} | head -200'"];
       defaultCommand = "fd --type f";
       fileWidgetCommand = "fd --type f";
-      fileWidgetOptions = [ "--preview 'bat {}'" ];
+      fileWidgetOptions = ["--preview 'bat {}'"];
     };
 
     tmux = {
@@ -107,8 +104,9 @@
       clock24 = true;
       keyMode = "vi";
       mouse = true;
-      terminal = "screen-256color";
+      terminal = "tmux-256color";
       extraConfig = ''
+        set -sg escape-time 0
         set-option -g history-limit 10000
       '';
       plugins = with pkgs.tmuxPlugins; [
@@ -137,4 +135,3 @@
     };
   };
 }
-
