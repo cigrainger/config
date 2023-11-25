@@ -2,24 +2,18 @@
   pkgs,
   config,
   ...
-}: let
-  local_elixir = pkgs.beam.packages.erlangR26.elixir_1_15;
-in {
+}: {
   home.packages = with pkgs; [
-    alejandra
     aws-vault
     cargo
     cmake
     coreutils
     curl
-    dog
     du-dust
     duf
-    elixir-ls
+    elixir
     erlangR26
-    erlang-ls
     flyctl
-    local_elixir
     entr
     fd
     gcc
@@ -27,35 +21,16 @@ in {
     glow
     jq
     lazydocker
-    lua
-    marksman
     minio-client
     mosh
     ncurses
-    nil
-    nixfmt
-    nixpkgs-fmt
-    nodePackages."@tailwindcss/language-server"
-    nodePackages.bash-language-server
-    nodePackages.dockerfile-language-server-nodejs
-    nodePackages.typescript-language-server
-    vscode-langservers-extracted
-    nodePackages.yaml-language-server
     onefetch
     openai
     ripgrep
-    rust-analyzer
-    rustfmt
     rustc
     sd
-    shellcheck
-    shfmt
     signal-cli
-    taplo
-    taskwarrior
-    taskwarrior-tui
     tealdeer
-    terraform-ls
     tig
     tree
     unzip
@@ -65,12 +40,31 @@ in {
     xsv
     wireguard-tools
     yubikey-manager
-    zls
   ];
 
   programs = {
     helix = {
       enable = true;
+      extraPackages = with pkgs; [
+        alejandra
+        elixir-ls
+        erlang-ls
+        marksman
+        nil
+        nodePackages."@tailwindcss/language-server"
+        nodePackages.bash-language-server
+        nodePackages.dockerfile-language-server-nodejs
+        nodePackages.typescript-language-server
+        nodePackages.yaml-language-server
+        rust-analyzer
+        rustfmt
+        shellcheck
+        shfmt
+        taplo
+        terraform-ls
+        vscode-langservers-extracted
+        zls
+      ];
       defaultEditor = true;
       settings = {
         theme = "catppuccin_mocha";
@@ -112,6 +106,7 @@ in {
         ];
       };
     };
+
     bottom = {
       enable = true;
       settings = {
