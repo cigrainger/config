@@ -1,7 +1,6 @@
 {
   pkgs,
   lib,
-  system,
   ...
 }: {
   nix = {
@@ -22,7 +21,13 @@
   };
 
   environment = {
-    pathsToLink = ["/share/fish"];
+    extraOutputsToInstall = [
+      "doc"
+      "info"
+      "devdoc"
+    ];
+
+    pathsToLink = ["/share/fish" "/share/doc"];
 
     shells = with pkgs; [fish];
 

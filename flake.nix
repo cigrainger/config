@@ -49,7 +49,6 @@
           home-manager.users.chris = {...}: {
             imports = [
               ./home.nix
-              ./home/fish.nix
               ./home/direnv.nix
             ];
 
@@ -80,7 +79,6 @@
             home-manager.users.chris = {...}: {
               imports = [
                 ./home.nix
-                ./home/fish.nix
                 ./home/direnv.nix
               ];
 
