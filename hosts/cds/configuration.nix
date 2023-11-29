@@ -55,6 +55,7 @@
       "font-victor-mono-nerd-font"
       "signal"
       "tailscale"
+      "transmission"
       "viscosity"
       "zoom"
       "zotero"

@@ -34,7 +34,6 @@
     tailscale
     tealdeer
     tig
-    transmission
     tree
     unzip
     wget
@@ -90,6 +89,13 @@
           gpu_core_colors = ["#74c7ec" "#cba6f7" "#f38ba8" "#fab387" "#f9e2af" "#a6e3a1"];
           arc_color = "#89dceb";
         };
+      };
+    };
+
+    broot = {
+      enable = true;
+      settings = {
+        modal = true;
       };
     };
 
@@ -312,6 +318,12 @@
     };
 
     navi.enable = true;
+
+    nnn = {
+      enable = true;
+      extraPackages = with pkgs; [ffmpegthumbnailer mediainfo];
+      package = pkgs.nnn.override {withNerdIcons = true;};
+    };
 
     starship = {
       enable = true;
