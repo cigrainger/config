@@ -20,6 +20,7 @@
     gcc
     gh
     glow
+    jaq
     jq
     lazydocker
     minio-client
@@ -195,7 +196,6 @@
         erlang-ls
         marksman
         nil
-        nodePackages."@tailwindcss/language-server"
         nodePackages.bash-language-server
         nodePackages.dockerfile-language-server-nodejs
         nodePackages.typescript-language-server
@@ -204,6 +204,7 @@
         rustfmt
         shellcheck
         shfmt
+        tailwindcss-language-server
         taplo
         terraform-ls
         vscode-langservers-extracted
@@ -233,19 +234,26 @@
         language-server.nil = {
           config = {formatting = {command = ["alejandra"];};};
         };
+        language-server.tailwind-heex = {
+          command = "tailwindcss-language-server";
+          args = ["--stdio"];
+        };
         language = [
           {
             name = "elixir";
             auto-format = true;
+            language-servers = ["elixir-ls" "tailwind-heex"];
+          }
+          {
+            name = "heex";
+            language-id = "phoenix-heex";
+            auto-format = true;
+            language-servers = ["elixir-ls" "tailwind-heex"];
           }
           {
             name = "nix";
             auto-format = true;
             language-servers = ["nil"];
-          }
-          {
-            name = "heex";
-            language-servers = ["elixir-ls" "tailwindcss-ls"];
           }
         ];
       };
