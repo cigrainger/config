@@ -561,7 +561,7 @@ vim.keymap.set("n", "<leader>td", function() require("neotest").run.run({ strate
   { desc = "[D]ebug nearest [T]est" })
 
 -- Trouble
-require('Trouble').setup()
+require('trouble').setup()
 vim.keymap.set("n", "<leader>xx", function() require("trouble").toggle() end, { desc = "Toggle Trouble" })
 vim.keymap.set("n", "<leader>xw", function() require("trouble").toggle("workspace_diagnostics") end,
   { desc = "Trouble Workspace Diagnostics" })

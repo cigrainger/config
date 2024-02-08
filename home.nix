@@ -6,10 +6,6 @@
   local_elixir = pkgs.beam.packages.erlangR26.elixir_1_16;
 in {
   home.packages = with pkgs; [
-    (buildEnv {
-      name = "my-scripts";
-      paths = [./scripts];
-    })
     awscli2
     aws-vault
     cargo
@@ -23,7 +19,6 @@ in {
     fd
     flyctl
     gcc
-    gh
     glow
     jaq
     jq
@@ -32,7 +27,6 @@ in {
     minio-client
     mosh
     ncurses
-    obsidian
     onefetch
     openai
     ripgrep
@@ -55,6 +49,7 @@ in {
   ];
 
   programs = {
+    gh = {enable = true;};
     bat = {
       enable = true;
       config = {theme = "catppuccin";};
@@ -123,7 +118,9 @@ in {
           --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
           --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8"
 
-        source /Users/chris/.config/op/plugins.sh
+        if test -f /Users/chris/.config/op/plugins.sh
+          source /Users/chris/.config/op/plugins.sh
+        end
       '';
       plugins = [
         {
@@ -182,17 +179,6 @@ in {
         init = {defaultBranch = "main";};
         github = {user = "cigrainger";};
         core = {editor = "nvim";};
-        gpg = {
-          "ssh" = {
-            program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
-          };
-          format = "ssh";
-        };
-        url = {"https://github.com" = {insteadOf = "git://github.com/";};};
-      };
-      signing = {
-        key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBIx4VvOw1EP5oCaWa6OTB9oJxZMkd9gQj8Kwf3lcC5y";
-        signByDefault = true;
       };
     };
 
