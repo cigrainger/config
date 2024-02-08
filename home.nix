@@ -19,7 +19,6 @@ in {
     fd
     flyctl
     gcc
-    gh
     glow
     jaq
     jq
@@ -50,6 +49,7 @@ in {
   ];
 
   programs = {
+    gh = {enable = true;};
     bat = {
       enable = true;
       config = {theme = "catppuccin";};
@@ -179,7 +179,6 @@ in {
         init = {defaultBranch = "main";};
         github = {user = "cigrainger";};
         core = {editor = "nvim";};
-        url = {"https://github.com" = {insteadOf = "git://github.com/";};};
       };
     };
 
