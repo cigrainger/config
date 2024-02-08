@@ -2,8 +2,14 @@
   pkgs,
   config,
   ...
-}: {
+}: let
+  local_elixir = pkgs.beam.packages.erlangR26.elixir_1_16;
+in {
   home.packages = with pkgs; [
+    (buildEnv {
+      name = "my-scripts";
+      paths = [./scripts];
+    })
     awscli2
     aws-vault
     cargo
@@ -12,9 +18,8 @@
     curl
     du-dust
     duf
-    elixir
     entr
-    erlangR26
+    erlang_26
     fd
     flyctl
     gcc
@@ -23,14 +28,18 @@
     jaq
     jq
     lazydocker
+    local_elixir
     minio-client
     mosh
     ncurses
+    obsidian
     onefetch
     openai
     ripgrep
     rustc
+    rye
     sd
+    semgrep
     signal-cli
     tailscale
     tealdeer
@@ -51,14 +60,12 @@
       config = {theme = "catppuccin";};
       themes = {
         catppuccin = {
-          src =
-            pkgs.fetchFromGitHub
-            {
-              owner = "catppuccin";
-              repo = "bat"; # Bat uses sublime syntax for its themes
-              rev = "ba4d16880d63e656acced2b7d4e034e4a93f74b1";
-              sha256 = "sha256-6WVKQErGdaqb++oaXnY3i6/GuH2FhTgK0v4TN4Y0Wbw=";
-            };
+          src = pkgs.fetchFromGitHub {
+            owner = "catppuccin";
+            repo = "bat"; # Bat uses sublime syntax for its themes
+            rev = "ba4d16880d63e656acced2b7d4e034e4a93f74b1";
+            sha256 = "sha256-6WVKQErGdaqb++oaXnY3i6/GuH2FhTgK0v4TN4Y0Wbw=";
+          };
           file = "Catppuccin-mocha.tmTheme";
         };
       };
@@ -95,9 +102,7 @@
 
     broot = {
       enable = true;
-      settings = {
-        modal = true;
-      };
+      settings = {modal = true;};
     };
 
     eza.enable = true;
@@ -137,9 +142,11 @@
         ll = "exa -lah --icons";
         ave = "aws-vault exec";
         avl = "aws-vault login";
+        vim = "nvim";
       };
       shellInit = ''
         fish_add_path /opts/homebrew/bin
+        fish_add_path /Users/chris/.cargo/bin
         set fish_greeting
       '';
     };
@@ -157,17 +164,24 @@
       enable = true;
       delta = {
         enable = true;
-        options = {
-          side-by-side = true;
-        };
+        options = {side-by-side = true;};
       };
-      ignores = [".nix-mix" ".nix-hex" ".direnv" "shell.nix" ".envrc" ".vscode" ".code-workspace"];
+      ignores = [
+        ".nix-mix"
+        ".nix-hex"
+        ".direnv"
+        "shell.nix"
+        ".envrc"
+        ".vscode"
+        ".code-workspace"
+      ];
       lfs.enable = true;
       userEmail = "chris@amplified.ai";
       userName = "Christopher Grainger";
       extraConfig = {
+        init = {defaultBranch = "main";};
         github = {user = "cigrainger";};
-        core = {editor = "hx";};
+        core = {editor = "nvim";};
         gpg = {
           "ssh" = {
             program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
@@ -210,7 +224,6 @@
         vscode-langservers-extracted
         zls
       ];
-      defaultEditor = true;
       settings = {
         theme = "catppuccin_mocha";
         editor = {
@@ -224,9 +237,25 @@
           lsp = {display-messages = true;};
           soft-wrap = {enable = true;};
           statusline = {
-            left = ["mode" "spinner" "file-name" "file-type" "total-line-numbers" "file-encoding"];
+            left = [
+              "mode"
+              "spinner"
+              "file-name"
+              "file-type"
+              "total-line-numbers"
+              "file-encoding"
+            ];
             center = [];
-            right = ["selections" "primary-selection-length" "position" "position-percentage" "spacer" "diagnostics" "workspace-diagnostics" "version-control"];
+            right = [
+              "selections"
+              "primary-selection-length"
+              "position"
+              "position-percentage"
+              "spacer"
+              "diagnostics"
+              "workspace-diagnostics"
+              "version-control"
+            ];
           };
         };
       };
@@ -249,6 +278,10 @@
             language-id = "phoenix-heex";
             auto-format = true;
             language-servers = ["elixir-ls" "tailwind-heex"];
+          }
+          {
+            name = "javascript";
+            auto-format = true;
           }
           {
             name = "nix";
@@ -340,15 +373,14 @@
           format = "$all"; # Remove this line to disable the default prompt format
           palette = "catppuccin_mocha";
         }
-        // builtins.fromTOML (builtins.readFile
-          (pkgs.fetchFromGitHub
-            {
-              owner = "catppuccin";
-              repo = "starship";
-              rev = "5629d2356f62a9f2f8efad3ff37476c19969bd4f";
-              sha256 = "sha256-nsRuxQFKbQkyEI4TXgvAjcroVdG+heKX5Pauq/4Ota0=";
-            }
-            + /palettes/mocha.toml));
+        // builtins.fromTOML (builtins.readFile (pkgs.fetchFromGitHub
+          {
+            owner = "catppuccin";
+            repo = "starship";
+            rev = "5629d2356f62a9f2f8efad3ff37476c19969bd4f";
+            sha256 = "sha256-nsRuxQFKbQkyEI4TXgvAjcroVdG+heKX5Pauq/4Ota0=";
+          }
+          + /palettes/mocha.toml));
     };
 
     tmux = {
