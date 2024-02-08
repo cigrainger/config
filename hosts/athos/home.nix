@@ -1,13 +1,4 @@
-{
-  pkgs,
-  config,
-  ...
-}: {
-  home.packages = with pkgs; [
-    mas
-    obsidian
-  ];
-
+{...}: {
   programs.git = {
     extraConfig = {
       commit.gpgsign = true;
