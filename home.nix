@@ -6,8 +6,8 @@
   local_elixir = pkgs.beam.packages.erlangR26.elixir_1_16;
 in {
   home.packages = with pkgs; [
-    awscli2
     aws-vault
+    awscli2
     cargo
     cmake
     coreutils
@@ -41,10 +41,10 @@ in {
     tree
     unzip
     wget
+    wireguard-tools
     xh
     xplr
     xsv
-    wireguard-tools
     yubikey-manager
   ];
 
@@ -101,6 +101,10 @@ in {
     };
 
     eza.enable = true;
+
+    nushell = {
+      enable = true;
+    };
 
     fish = {
       enable = true;
