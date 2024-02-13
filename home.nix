@@ -27,6 +27,7 @@ in {
     minio-client
     mosh
     ncurses
+    ollama
     onefetch
     openai
     ripgrep
