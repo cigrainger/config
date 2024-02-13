@@ -397,16 +397,17 @@ capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 -- Enable the following language servers
 local lspconfig = require 'lspconfig'
 local servers = {
+  'bashls',
+  'denols',
+  'dockerls',
+  'emmet_language_server',
+  'golangci_lint_ls',
+  'nil_ls',
   'ruff_lsp',
   'tailwindcss',
-  'emmet_language_server',
-  'nil_ls',
-  'terraformls',
-  'dockerls',
-  'bashls',
   'taplo',
+  'terraformls',
   'yamlls',
-  'denols'
 }
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup { on_attach = on_attach, capabilities = capabilities }
@@ -457,10 +458,14 @@ lspconfig.lua_ls.setup {
 -- None LS
 local null_ls = require("null-ls")
 local sources = {
-  null_ls.builtins.formatting.alejandra,
-  null_ls.builtins.formatting.prettier,
   null_ls.builtins.diagnostics.credo,
-  null_ls.builtins.formatting.rustywind
+  null_ls.builtins.formatting.alejandra,
+  null_ls.builtins.formatting.djhtml,
+  null_ls.builtins.formatting.prettier,
+  null_ls.builtins.formatting.rustywind,
+  null_ls.builtins.formatting.sqlfluff.with({
+    extra_args = { "--dialect", "sqlite" },
+  }),
 }
 
 null_ls.setup({ on_attach = on_attach, sources = sources })

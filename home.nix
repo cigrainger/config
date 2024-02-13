@@ -18,6 +18,7 @@ in {
     erlang_26
     fd
     flyctl
+    go
     gcc
     glow
     jaq

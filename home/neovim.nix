@@ -42,6 +42,7 @@
       telescope-nvim
       trouble-nvim
       vim-tmux-navigator
+      vim-just
       which-key-nvim
     ];
 
@@ -50,10 +51,13 @@
       alejandra
       deadnix
       deno
+      djhtml
       dotenv-linter
       elixir-ls
       emmet-language-server
       erlang-ls
+      golangci-lint
+      golangci-lint-langserver
       lua-language-server
       marksman
       nil
@@ -72,6 +76,7 @@
       rustywind
       shellcheck
       shfmt
+      sqlfluff
       tailwindcss-language-server
       taplo
       terraform-ls
