@@ -53,6 +53,7 @@ in {
     xh
     xplr
     xsv
+    yt-dlp
     yubikey-manager
   ];
 
