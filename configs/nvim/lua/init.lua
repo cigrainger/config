@@ -151,6 +151,10 @@ vim.o.completeopt = 'menuone,noselect'
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
+
 -- [[ Basic Keymaps ]]
 
 -- Keymaps for better default experience
@@ -398,15 +402,16 @@ capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 local lspconfig = require 'lspconfig'
 local servers = {
   'bashls',
-  'denols',
   'dockerls',
   'emmet_language_server',
+  'gleam',
   'golangci_lint_ls',
   'nil_ls',
   'ruff_lsp',
   'tailwindcss',
   'taplo',
   'terraformls',
+  'tsserver',
   'yamlls',
 }
 for _, lsp in ipairs(servers) do
@@ -460,8 +465,8 @@ local null_ls = require("null-ls")
 local sources = {
   null_ls.builtins.diagnostics.credo,
   null_ls.builtins.formatting.alejandra,
-  null_ls.builtins.formatting.djhtml,
-  null_ls.builtins.formatting.prettier,
+  -- null_ls.builtins.formatting.djhtml,
+  -- null_ls.builtins.formatting.prettier,
   null_ls.builtins.formatting.rustywind,
   null_ls.builtins.formatting.sqlfluff.with({
     extra_args = { "--dialect", "sqlite" },
