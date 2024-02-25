@@ -58,7 +58,10 @@ in {
   ];
 
   programs = {
+    atuin = {enable = true;};
+
     gh = {enable = true;};
+
     bat = {
       enable = true;
       config = {theme = "catppuccin";};
