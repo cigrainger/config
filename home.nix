@@ -26,6 +26,7 @@ in {
     ])
     go
     gcc
+    gleam
     glow
     jaq
     jq
