@@ -16,6 +16,10 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    fenix = {
+      url = "github:nix-community/fenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -23,6 +27,7 @@
     darwin,
     nixpkgs,
     home-manager,
+    fenix,
     ...
   } @ inputs: let
     inherit (darwin.lib) darwinSystem;
@@ -34,6 +39,8 @@
       overlays = attrValues self.overlays;
     };
   in {
+    packages.x86_64-linux.default = fenix.packages.x86_64-linux.latest.toolchain;
+    packages.aarch64-darwin.default = fenix.packages.aarch64-darwin.latest.toolchain;
     nixosConfigurations.athos = inputs.nixpkgs-unstable.lib.nixosSystem {
       specialArgs = {inherit inputs;};
       system = "x86_64-linux";
@@ -97,6 +104,7 @@
 
     overlays = {
       # Overlay useful on Macs with Apple Silicon
+      fenixOverlay = fenix.overlays.default;
       apple-silicon = _: prev:
         optionalAttrs (prev.stdenv.system == "aarch64-darwin") {
           # Add access to x86 packages

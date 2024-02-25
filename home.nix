@@ -8,7 +8,6 @@ in {
   home.packages = with pkgs; [
     aws-vault
     awscli2
-    cargo
     cmake
     coreutils
     curl
@@ -18,6 +17,13 @@ in {
     erlang_26
     fd
     flyctl
+    (fenix.complete.withComponents [
+      "cargo"
+      "clippy"
+      "rust-src"
+      "rustc"
+      "rustfmt"
+    ])
     go
     gcc
     glow
@@ -32,7 +38,6 @@ in {
     onefetch
     openai
     ripgrep
-    rustc
     rye
     sd
     semgrep
