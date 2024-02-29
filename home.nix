@@ -58,7 +58,13 @@ in {
   ];
 
   programs = {
-    atuin = {enable = true;};
+    atuin = {
+      enable = true;
+      settings = {
+        filter_mode = "host";
+        filter_mode_shell_up_key_binding = "session";
+      };
+    };
 
     gh = {enable = true;};
 
