@@ -83,7 +83,6 @@ require('leap').create_default_mappings()
 -- Theme
 require('catppuccin').setup({
   integrations = {
-    aerial = true,
     cmp = true,
     flash = true,
     gitsigns = true,
@@ -406,6 +405,7 @@ local servers = {
   'emmet_language_server',
   'gleam',
   'golangci_lint_ls',
+  'lemminx',
   'nil_ls',
   'ruff_lsp',
   'tailwindcss',
@@ -418,16 +418,18 @@ for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup { on_attach = on_attach, capabilities = capabilities }
 end
 
-local lsp_options = {
-  capabilities = capabilities,
-  on_attach = on_attach,
-  single_file_support = true,
-}
+local elixir = require("elixir")
+local elixirls = require("elixir.elixirls")
 
-lspconfig.elixirls.setup(vim.tbl_extend("force", lsp_options, {
-  cmd = { "elixir-ls" },
-  settings = { elixirLS = { dialyzerEnabled = false } },
-}))
+elixir.setup {
+  elixirls = {
+    enable = true,
+    settings = elixirls.settings {
+      dialyzerEnabled = false,
+    },
+    on_attach = on_attach,
+  },
+}
 
 vim.g.rustaceanvim = { server = { on_attach = on_attach } }
 
@@ -465,8 +467,7 @@ local null_ls = require("null-ls")
 local sources = {
   null_ls.builtins.diagnostics.credo,
   null_ls.builtins.formatting.alejandra,
-  -- null_ls.builtins.formatting.djhtml,
-  -- null_ls.builtins.formatting.prettier,
+  null_ls.builtins.formatting.prettier,
   null_ls.builtins.formatting.rustywind,
   null_ls.builtins.formatting.sqlfluff.with({
     extra_args = { "--dialect", "sqlite" },
@@ -486,6 +487,12 @@ end, 100)
 cmp.setup {
   completion = {
     completeopt = 'menu,menuone,noinsert',
+  },
+  snippet = {
+    -- REQUIRED - you must specify a snippet engine
+    expand = function(args)
+      vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+    end,
   },
   mapping = cmp.mapping.preset.insert {
     ['<C-n>'] = cmp.mapping.select_next_item(),
@@ -516,22 +523,16 @@ cmp.setup {
     { name = 'copilot' },
     { name = 'nvim_lsp' },
     { name = 'path' },
+    { name = 'vsnip' }
   },
 }
 
 -- oil-nvim
-require('mini.files').setup()
-vim.keymap.set("n", "<leader>oo", require('mini.files').open, { desc = "[O]pen Mini[F]iles" })
+require("oil").setup()
+vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
 -- unimpaired
 require('mini.bracketed').setup()
-
--- comments
-require('mini.comment').setup()
-
--- notify
--- TODO: Set up once mini-nvim has been updated.
-require('mini.notify').setup()
 
 -- indent
 require('mini.indentscope').setup()
@@ -571,15 +572,63 @@ vim.keymap.set("n", "<leader>td", function() require("neotest").run.run({ strate
   { desc = "[D]ebug nearest [T]est" })
 
 -- Trouble
-require('trouble').setup()
-vim.keymap.set("n", "<leader>xx", function() require("trouble").toggle() end, { desc = "Toggle Trouble" })
-vim.keymap.set("n", "<leader>xw", function() require("trouble").toggle("workspace_diagnostics") end,
-  { desc = "Trouble Workspace Diagnostics" })
-vim.keymap.set("n", "<leader>xd", function() require("trouble").toggle("document_diagnostics") end,
-  { desc = "Trouble Document Diagnostics" })
-vim.keymap.set("n", "<leader>xq", function() require("trouble").toggle("quickfix") end, { desc = "Trouble Quickfix" })
-vim.keymap.set("n", "<leader>xl", function() require("trouble").toggle("loclist") end, { desc = "Trouble Loclist" })
-vim.keymap.set("n", "gR", function() require("trouble").toggle("lsp_references") end)
+require('trouble').setup({
+  modes = {
+    test = {
+      mode = "diagnostics",
+      preview = {
+        type = "split",
+        relative = "win",
+        position = "right",
+        size = 0.3,
+      },
+    },
+    symbols = {
+      desc = "document symbols",
+      mode = "lsp_document_symbols",
+      focus = false,
+      win = { position = "right", size = 0.3 },
+      filter = {
+        -- remove Package since luals uses it for control flow structures
+        ["not"] = { ft = "lua", kind = "Package" },
+        any = {
+          -- all symbol kinds for help / markdown files
+          ft = { "help", "markdown" },
+          -- default set of symbol kinds
+          kind = {
+            "Class",
+            "Constructor",
+            "Enum",
+            "Field",
+            "Function",
+            "Interface",
+            "Method",
+            "Module",
+            "Namespace",
+            "Package",
+            "Property",
+            "Struct",
+            "Trait",
+          },
+        },
+      },
+    },
+  },
+})
+
+vim.keymap.set("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Toggle Trouble" })
+vim.keymap.set("n", "<leader>cs",
+  "<cmd>Trouble symbols toggle focus=false<cr>", { desc = "Trouble Symbols" })
+vim.keymap.set("n", "<leader>xd", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+  { desc = "Trouble Buffer Diagnostics" })
+vim.keymap.set("n", "<leader>xq", "<cmd>Trouble qflist toggle<cr>", { desc = "Trouble Quickfix" })
+vim.keymap.set("n", "<leader>xl", "<cmd>Trouble loclist toggle<cr>", { desc = "Trouble Loclist" })
+vim.keymap.set("n", "gR", "<cmd>Trouble lsp toggle focus=false win.position=right win.size=0.3<cr>")
+
+-- Barbecue
+require("barbecue").setup {
+  theme = "catppuccin",
+}
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
