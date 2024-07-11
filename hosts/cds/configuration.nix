@@ -1,19 +1,18 @@
-{ ... }: {
-  imports = [ ../common/configuration.nix ];
+{...}: {
+  imports = [../common/configuration.nix];
 
   nix = {
     configureBuildUsers = true;
     settings = {
-      substituters = [ "https://cache.nixos.org/" ];
+      substituters = ["https://cache.nixos.org/"];
 
-      trusted-public-keys =
-        [ "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" ];
+      trusted-public-keys = ["cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="];
 
-      trusted-users = [ "@admin" ];
+      trusted-users = ["@admin"];
     };
   };
 
-  services = { nix-daemon.enable = true; };
+  services = {nix-daemon.enable = true;};
 
   users.users."chris".home = "/Users/chris";
 
@@ -24,8 +23,8 @@
       cleanup = "zap";
       upgrade = true;
     };
-    taps = [ "homebrew/services" "homebrew/cask-fonts" ];
-    brews = [ "libtool" "llvm" "grep" "fontconfig" "libvterm" ];
+    taps = ["homebrew/services" "homebrew/cask-fonts"];
+    brews = ["libtool" "llvm" "gnu-sed" "grep" "fontconfig" "libvterm"];
     casks = [
       "1Password"
       "1password-cli"

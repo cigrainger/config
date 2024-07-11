@@ -3,7 +3,7 @@
   config,
   ...
 }: let
-  local_elixir = pkgs.beam.packages.erlangR26.elixir_1_16;
+  local_elixir = pkgs.beam.packages.erlang_27.elixir_1_17;
 in {
   home.packages = with pkgs; [
     aws-vault
@@ -14,7 +14,7 @@ in {
     du-dust
     duf
     entr
-    erlang_26
+    erlang_27
     fd
     flyctl
     (fenix.complete.withComponents [
@@ -40,6 +40,7 @@ in {
     openai
     ripgrep
     rye
+    sad
     sd
     semgrep
     signal-cli
@@ -61,7 +62,6 @@ in {
     atuin = {
       enable = true;
       settings = {
-        filter_mode = "host";
         filter_mode_shell_up_key_binding = "session";
       };
     };
@@ -345,8 +345,8 @@ in {
       enable = true;
       extraConfig = ''
         return {
-          font = wezterm.font("Berkeley Mono"),
-          font_size = 12.0,
+          font = wezterm.font("Iosevka Nerd Font Mono"),
+          font_size = 13.0,
           color_scheme = "Catppuccin Mocha",
           hide_tab_bar_if_only_one_tab = true,
         }
