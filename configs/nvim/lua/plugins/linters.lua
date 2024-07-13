@@ -1,10 +1,11 @@
 require('lint').linters_by_ft = {
-  markdown = { 'vale', },
+  dockerfile = { 'hadolint', 'trivy', },
   elixir = { 'credo', },
   fish = { 'fish', },
-  dockerfile = { 'hadolint', 'trivy', },
+  markdown = { 'vale', },
   nix = { 'nix', 'deadnix', },
   terraform = { 'tflint', 'trivy', },
+  typescript = { 'eslint_d', 'stylelint', 'prettier', },
 }
 
 vim.api.nvim_create_autocmd({ "BufWritePost" }, {

@@ -14,6 +14,7 @@
 
     plugins = with pkgs.vimPlugins; [
       barbecue-nvim
+      bufferline-nvim
       catppuccin-nvim
       cmp-nvim-lsp
       cmp-nvim-lsp-document-symbol
@@ -24,12 +25,13 @@
       copilot-cmp
       copilot-lua
       elixir-tools-nvim
+      flash-nvim
       friendly-snippets
       gitsigns-nvim
       indent-blankline-nvim
-      leap-nvim
       lsp-format-nvim
       mini-nvim
+      neo-tree-nvim
       neodev-nvim
       neotest
       neotest-elixir
@@ -65,6 +67,7 @@
       elixir-ls
       emmet-language-server
       erlang-ls
+      eslint_d
       golangci-lint
       golangci-lint-langserver
       hadolint
@@ -86,6 +89,7 @@
       shellcheck
       shfmt
       sqlfluff
+      stylelint
       tailwindcss-language-server
       taplo
       terraform-ls

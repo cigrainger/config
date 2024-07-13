@@ -71,7 +71,13 @@ require('trouble').setup({
   },
 })
 
--- Configure Leap
-require('leap').create_default_mappings()
+-- Configure Flash
+require('flash').setup()
+
+-- Neotree
+require('neo-tree').setup()
+
+-- Bufferline
+require("bufferline").setup {}
 
 return {}

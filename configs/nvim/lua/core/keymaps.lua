@@ -30,14 +30,6 @@ vim.keymap.set("n", "<leader>nt", "<CMD>ObsidianToday<CR>", { desc = "[T]oday's 
 vim.keymap.set("n", "<leader>nm", "<CMD>ObsidianTomorrow<CR>", { desc = "To[m]orrow's [N]ote" })
 vim.keymap.set("n", "<leader>ny", "<CMD>ObsidianYesterday<CR>", { desc = "[Y]esterday's [N]ote" })
 
--- Neotest
--- -- Neotest
-vim.keymap.set("n", "<leader>tn", function() require("neotest").run.run() end, { desc = "[T]est [N]earest" })
-vim.keymap.set("n", "<leader>tf", function() require("neotest").run.run(vim.fn.expand("%")) end,
-  { desc = "[T]est nearest [F]ile" })
-vim.keymap.set("n", "<leader>td", function() require("neotest").run.run({ strategy = "dap" }) end,
-  { desc = "[D]ebug nearest [T]est" })
-
 -- Trouble
 vim.keymap.set("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Diagnostics (Trouble)" })
 vim.keymap.set("n", "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", { desc = "Trouble Symbols" })
@@ -56,13 +48,27 @@ vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc
 vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>f', require('telescope.builtin').find_files, { desc = '[F]ind files' })
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
-vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sG', ':LiveGrepGitRoot<cr>', { desc = '[S]earch by [G]rep on Git Root' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
 vim.keymap.set('n', '<leader>sW', require('telescope.builtin').lsp_dynamic_workspace_symbols,
   { desc = '[S]earch [W]orkspace symbols' })
+
+-- Flash
+vim.keymap.set({ "n", "x", "o" }, "s", function() require("flash").jump() end, { desc = "Flash" })
+vim.keymap.set({ "n", "x", "o" }, "S", function() require("flash").treesitter() end, { desc = "Flash Treesitter" })
+vim.keymap.set("o", "r", function() require("flash").remote() end, { desc = "Remote Flash" })
+vim.keymap.set({ "o", "x" }, "R", function() require("flash").treesitter_search() end, { desc = "Treesitter Search" })
+vim.keymap.set("c", "<c-s>", function() require("flash").toggle() end, { desc = "Toggle Flash Search" })
+
+-- Spectre
+vim.keymap.set('n', '<leader>S', '<cmd>lua require("spectre").toggle()<CR>', { desc = "Toggle Spectre" })
+vim.keymap.set('n', '<leader>sw', '<cmd>lua require("spectre").open_visual({select_word=true})<CR>',
+  { desc = "Search current word" })
+vim.keymap.set('v', '<leader>sw', '<esc><cmd>lua require("spectre").open_visual()<CR>', { desc = "Search current word" })
+vim.keymap.set('n', '<leader>sp', '<cmd>lua require("spectre").open_file_search({select_word=true})<CR>',
+  { desc = "Search on current file" })
 
 -- Which-key registrations
 -- (This would typically be called after the which-key plugin is loaded)
@@ -85,4 +91,68 @@ wk.register({
   ['<leader>'] = { name = 'VISUAL <leader>' },
 }, { mode = 'v' })
 
+-- Open
+wk.register({
+  o = {
+    name = "[O]pen",
+    n = { "<cmd>Neotree<cr>", "NeoTree" },
+    -- You can add more commands under this group, for example:
+    -- f = { "<cmd>FzfLua files<cr>", "Find File" },
+  },
+}, { prefix = "<leader>" })
+
+-- Test
+wk.register({
+  t = {
+    name = "Test",
+    a = {
+      function()
+        require("neotest").run.run(vim.fn.getcwd())
+      end,
+      "Run All Tests"
+    },
+    f = {
+      function()
+        require("neotest").run.run(vim.fn.expand("%"))
+      end,
+      "Run Current File"
+    },
+    n = {
+      function()
+        require("neotest").run.run()
+      end,
+      "Run Nearest Test"
+    },
+    s = {
+      function()
+        require("neotest").summary.toggle()
+      end,
+      "Toggle Summary"
+    },
+    o = {
+      function()
+        require("neotest").output.open({ enter = true })
+      end,
+      "Open Output"
+    },
+    p = {
+      function()
+        require("neotest").output_panel.toggle()
+      end,
+      "Toggle Output Panel"
+    },
+    w = {
+      function()
+        require("neotest").watch.toggle(vim.fn.expand("%"))
+      end,
+      "Watch Current File"
+    },
+    d = {
+      function()
+        require("neotest").run.run({ strategy = "dap" })
+      end,
+      "Debug Nearest Test"
+    },
+  },
+}, { prefix = "<leader>" })
 return {}

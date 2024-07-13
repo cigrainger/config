@@ -45,4 +45,7 @@ require('barbecue').setup {
   theme = 'catppuccin',
 }
 
+-- Spectre
+require('spectre').setup()
+
 return {}
