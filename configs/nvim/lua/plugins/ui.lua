@@ -4,13 +4,13 @@
 require('catppuccin').setup({
   integrations = {
     cmp = true,
-    gitsigns = true,
-    telescope = true,
-    notify = true,
-    mini = { enabled = true },
     dap = true,
-    treesitter = true,
+    flash = true,
+    gitsigns = true,
+    indent_blankline = { enabled = true },
     lsp_trouble = true,
+    markdown = true,
+    mini = { enabled = true },
     native_lsp = {
       enabled = true,
       virtual_text = {
@@ -20,13 +20,19 @@ require('catppuccin').setup({
         information = { "italic" },
       },
       underlines = {
-        errors = { "underline" },
-        hints = { "underline" },
-        warnings = { "underline" },
-        information = { "underline" },
+        errors = { "undercurl" },
+        hints = { "undercurl" },
+        warnings = { "undercurl" },
+        information = { "undercurl" },
       },
     },
+        neotest = true,
+    neotree = true,
+    notify = true,
     octo = true,
+    semantic_tokens = true,
+    telescope = true,
+    treesitter = true,
     which_key = true
   }
 })

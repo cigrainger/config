@@ -14,7 +14,6 @@
 
     plugins = with pkgs.vimPlugins; [
       barbecue-nvim
-      bufferline-nvim
       catppuccin-nvim
       cmp-nvim-lsp
       cmp-nvim-lsp-document-symbol
@@ -22,6 +21,7 @@
       cmp-nvim-lua
       cmp-path
       cmp-vsnip
+      conform-nvim
       copilot-cmp
       copilot-lua
       elixir-tools-nvim
@@ -29,7 +29,6 @@
       friendly-snippets
       gitsigns-nvim
       indent-blankline-nvim
-      lsp-format-nvim
       mini-nvim
       neo-tree-nvim
       neodev-nvim
@@ -76,6 +75,7 @@
       marksman
       nil
       nodePackages.bash-language-server
+      nodePackages.cspell
       nodePackages.dockerfile-language-server-nodejs
       nodePackages.prettier
       nodePackages.typescript-language-server
@@ -89,7 +89,9 @@
       shellcheck
       shfmt
       sqlfluff
+      statix
       stylelint
+      stylua
       tailwindcss-language-server
       taplo
       terraform-ls
@@ -98,6 +100,9 @@
       trivy
       vale
       vscode-langservers-extracted
+      xmlformat
+      yamlfmt
+      yamllint
     ];
   };
 }

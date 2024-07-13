@@ -1,12 +1,6 @@
 -- plugins/lsp.lua
 
-local on_attach = function(client, bufnr)
-  -- Enable completion triggered by <c-x><c-o>
-  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-  -- Format on save
-  require("lsp-format").on_attach(client, bufnr)
-
+local on_attach = function(_, bufnr)
   -- Mappings.
   -- See `:help vim.lsp.*` for documentation on any of the below functions
   local bufopts = { noremap = true, silent = true, buffer = bufnr }
@@ -100,18 +94,5 @@ elixir.setup {
 
 -- Rust LSP configuration
 vim.g.rustaceanvim = { server = { on_attach = on_attach } }
-
--- null-ls configuration
-local null_ls = require("null-ls")
-local sources = {
-  null_ls.builtins.formatting.alejandra,
-  null_ls.builtins.formatting.prettier,
-  null_ls.builtins.formatting.rustywind,
-  null_ls.builtins.formatting.sqlfluff.with({
-    extra_args = { "--dialect", "sqlite" },
-  }),
-}
-
-null_ls.setup({ on_attach = on_attach, sources = sources })
 
 return {}
