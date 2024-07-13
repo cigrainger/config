@@ -186,6 +186,7 @@ in {
         options = {side-by-side = true;};
       };
       ignores = [
+        ".nvim.lua"
         ".nix-mix"
         ".nix-hex"
         ".direnv"

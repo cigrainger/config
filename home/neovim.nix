@@ -15,10 +15,10 @@
     plugins = with pkgs.vimPlugins; [
       barbecue-nvim
       catppuccin-nvim
-      cmp-nvim-lua
       cmp-nvim-lsp
-      cmp-nvim-lsp-signature-help
       cmp-nvim-lsp-document-symbol
+      cmp-nvim-lsp-signature-help
+      cmp-nvim-lua
       cmp-path
       cmp-vsnip
       copilot-cmp
@@ -37,6 +37,7 @@
       none-ls-nvim
       nvim-cmp
       nvim-dap
+      nvim-lint
       nvim-lspconfig
       nvim-spectre
       nvim-treesitter.withAllGrammars
@@ -47,8 +48,9 @@
       telescope-fzf-native-nvim
       telescope-nvim
       trouble-nvim
-      vim-tmux-navigator
+      vim-caddyfile
       vim-just
+      vim-tmux-navigator
       vim-vsnip
       which-key-nvim
     ];
@@ -65,6 +67,7 @@
       erlang-ls
       golangci-lint
       golangci-lint-langserver
+      hadolint
       lemminx
       lua-language-server
       marksman
@@ -86,8 +89,10 @@
       tailwindcss-language-server
       taplo
       terraform-ls
-      tfsec
+      tflint
       tree-sitter
+      trivy
+      vale
       vscode-langservers-extracted
     ];
   };
