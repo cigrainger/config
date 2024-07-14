@@ -4,8 +4,6 @@
   ...
 }: {
   nix = {
-    package = pkgs.nixVersions.latest;
-
     extraOptions =
       ''
         auto-optimise-store = true

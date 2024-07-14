@@ -16,8 +16,14 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+
     fenix = {
       url = "github:nix-community/fenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    lix-module = {
+      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.90.0.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -26,6 +32,7 @@
     self,
     darwin,
     nixpkgs,
+    lix-module,
     home-manager,
     fenix,
     ...
@@ -46,6 +53,7 @@
       system = "x86_64-linux";
       modules = [
         {nixpkgs = nixpkgsConfig;}
+        lix-module.nixosModules.default
         ./hosts/athos/configuration.nix
         home-manager.nixosModules.home-manager
         {
@@ -77,6 +85,7 @@
         modules = [
           # Main `nix-darwin` config
           ./hosts/cds/configuration.nix
+          lix-module.nixosModules.default
           # `home-manager` module
           home-manager.darwinModules.home-manager
           {
