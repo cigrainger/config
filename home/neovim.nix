@@ -43,7 +43,6 @@
       nvim-spectre
       nvim-treesitter.withAllGrammars
       nvim-web-devicons
-      obsidian-nvim
       oil-nvim
       rustaceanvim
       telescope-fzf-native-nvim

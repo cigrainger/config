@@ -6,18 +6,6 @@ require("oil").setup()
 -- Configure mini.bracketed
 require("mini.bracketed").setup()
 
--- Configure Obsidian
-require("obsidian").setup({
-	finder = "telescope.nvim",
-	workspaces = {
-		{
-			name = "obsidian_vault",
-			path = "~/code/obsidian_vault",
-		},
-	},
-	completion = { nvim_cmp = true },
-})
-
 -- Configure Neotest
 require("neotest").setup({
 	adapters = {
