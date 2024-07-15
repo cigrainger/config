@@ -50,7 +50,9 @@ vim.keymap.set("n", "<leader>/", require("telescope.builtin").live_grep, { desc 
 
 vim.keymap.set("n", "<leader>gf", require("telescope.builtin").git_files, { desc = "Search [G]it [F]iles" })
 vim.keymap.set("n", "<leader>sf", require("telescope.builtin").find_files, { desc = "[S]earch [F]iles" })
-vim.keymap.set("n", "<leader>f", require("telescope.builtin").find_files, { desc = "[F]ind files" })
+vim.keymap.set("n", "<leader>f", function()
+	require("telescope.builtin").find_files()
+end, { desc = "[F]ind files" })
 vim.keymap.set("n", "<leader>sh", require("telescope.builtin").help_tags, { desc = "[S]earch [H]elp" })
 vim.keymap.set("n", "<leader>sg", require("telescope.builtin").live_grep, { desc = "[S]earch by [G]rep" })
 vim.keymap.set("n", "<leader>sG", ":LiveGrepGitRoot<cr>", { desc = "[S]earch by [G]rep on Git Root" })
@@ -127,7 +129,7 @@ wk.register({
 wk.register({
 	o = {
 		name = "[O]pen",
-		n = { "<cmd>Neotree<cr>", "NeoTree" },
+		n = { "<cmd>Neotree toggle reveal=true<cr>", "NeoTree" },
 		-- You can add more commands under this group, for example:
 		-- f = { "<cmd>FzfLua files<cr>", "Find File" },
 	},
