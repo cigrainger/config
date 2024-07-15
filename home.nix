@@ -15,7 +15,6 @@ in {
     duf
     entr
     erlang_27
-    fd
     flyctl
     (fenix.complete.withComponents [
       "cargo"
@@ -29,7 +28,6 @@ in {
     gleam
     glow
     jaq
-    jq
     lazydocker
     local_elixir
     minio-client
@@ -66,7 +64,14 @@ in {
       };
     };
 
+    fd = {
+      enable = true;
+      ignores = [".git/"];
+    };
+
     gh = {enable = true;};
+
+    jq = {enable = true;};
 
     bat = {
       enable = true;
