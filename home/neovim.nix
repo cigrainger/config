@@ -14,7 +14,6 @@
 
     plugins = with pkgs.vimPlugins; [
       barbecue-nvim
-      catppuccin-nvim
       cmp-nvim-lsp
       cmp-nvim-lsp-document-symbol
       cmp-nvim-lsp-signature-help
@@ -44,6 +43,7 @@
       nvim-treesitter.withAllGrammars
       nvim-web-devicons
       oil-nvim
+      rose-pine
       rustaceanvim
       telescope-fzf-native-nvim
       telescope-nvim

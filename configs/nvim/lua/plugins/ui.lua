@@ -1,57 +1,25 @@
 -- plugins/ui.lua
 
--- Catppuccin theme configuration
-require('catppuccin').setup({
-  integrations = {
-    cmp = true,
-    dap = true,
-    flash = true,
-    gitsigns = true,
-    indent_blankline = { enabled = true },
-    lsp_trouble = true,
-    markdown = true,
-    mini = { enabled = true },
-    native_lsp = {
-      enabled = true,
-      virtual_text = {
-        errors = { "italic" },
-        hints = { "italic" },
-        warnings = { "italic" },
-        information = { "italic" },
-      },
-      underlines = {
-        errors = { "undercurl" },
-        hints = { "undercurl" },
-        warnings = { "undercurl" },
-        information = { "undercurl" },
-      },
-    },
-        neotest = true,
-    neotree = true,
-    notify = true,
-    octo = true,
-    semantic_tokens = true,
-    telescope = true,
-    treesitter = true,
-    which_key = true
-  }
+-- Rose pine
+require("rose-pine").setup({
+	variant = "main",
 })
 
 -- Set the colorscheme
-vim.cmd('colorscheme catppuccin')
+vim.cmd("colorscheme rose-pine")
 
 -- Statusline configuration (using mini.statusline)
-require('mini.statusline').setup()
+require("mini.statusline").setup()
 
 -- Indentscope configuration
-require('mini.indentscope').setup()
+require("mini.indentscope").setup()
 
 -- Configure Barbecue
-require('barbecue').setup {
-  theme = 'catppuccin',
-}
+require("barbecue").setup({
+	theme = "rose-pine",
+})
 
 -- Spectre
-require('spectre').setup()
+require("spectre").setup()
 
 return {}
